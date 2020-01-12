@@ -70,7 +70,7 @@ parser.add_argument('--pre-act', action='store_true', default=False,
                     help='use pre-activation in ResNet')
 parser.add_argument('--seed', type=int, default=1,
                     help='random seed (default: 1)')
-parser.add_argument('--save-dir', default='/hdd/results/local-error', type=str,
+parser.add_argument('--save-dir', default='results/local-error', type=str,
                     help='the directory used to save the trained models')
 parser.add_argument('--resume', default='', type=str,
                     help='checkpoint to resume training from')
@@ -1647,6 +1647,7 @@ for epoch in range(start_epoch, args.epochs + 1):
         filename = 'chkp_ep{}_lr{:.2e}_trainloss{:.2f}_testloss{:.2f}_trainerr{:.2f}_testerr{:.2f}.tar'.format(
                 epoch, lr, train_loss, test_loss, train_error, test_error)
         dirname = os.path.join(args.save_dir, args.dataset)
+        print(args.save_dir, args.dataset)
         dirname = os.path.join(dirname, '{}_mult{:.1f}'.format(args.model, args.feat_mult))
         dirname = os.path.join(dirname, '{}_{}x{}_{}_{}_dimdec{}_alpha{}_beta{}_bs{}_cpb{}_drop{}{}_bn{}_{}_wd{}_bp{}_detach{}_lr{:.2e}'.format(
                 args.nonlin, args.num_layers, args.num_hidden, args.loss_sup + '-bio' if args.bio else args.loss_sup, args.loss_unsup, args.dim_in_decoder, args.alpha, 
