@@ -11,8 +11,7 @@ def parse_args():
     parser.add_argument('--batch-size', type=int, default=128,
                         help='input batch size for training (default: 128)')
     parser.add_argument('--num-layers', type=int, default=0,
-                        help='number of hidden fully-connected layers for mlp
-                        and vgg models (default: 0')
+                        help='number of hidden fully-connected layers for mlp and vgg models (default: 0')
     parser.add_argument('--num-hidden', type=int, default=1024,
                         help='number of hidden units for mpl model (default: 1024)')
     parser.add_argument('--dim-in-decoder', type=int, default=4096,

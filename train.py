@@ -12,9 +12,11 @@ import os
 from utils import Cutout, NClassRandomSampler,count_parameters, to_one_hot, similarity_matrix
 from models import *
 from settings import parse_args
+import wandb
 
 
 args = parse_args()
+wandb.init(config=args, project="local-loss")
 
 if args.cuda:
     cudnn.enabled = True
@@ -291,6 +293,8 @@ if checkpoint is not None:
 if args.cuda:
     model.cuda()
 
+wandb.watch(model)
+
 if args.progress_bar:
     from tqdm import tqdm
     
@@ -415,6 +419,7 @@ def test(epoch):
         loss_average *= (1 - args.beta)
     error_percent = 100 - 100.0 * float(correct) / len(test_loader.dataset)
     string_print = 'Test loss_global={:.4f}, error={:.3f}%\n'.format(loss_average, error_percent)
+    wandb.log({"Test Loss Global": loss_average, "Error": error_percent})
     if not args.no_print_stats:
         for m in model.modules():
             if isinstance(m, LocalLossBlockLinear) or isinstance(m, LocalLossBlockConv):
@@ -458,8 +463,8 @@ for epoch in range(start_epoch, args.epochs + 1):
         dirname = os.path.join(args.save_dir, args.dataset)
         print(args.save_dir, args.dataset)
         dirname = os.path.join(dirname, '{}_mult{:.1f}'.format(args.model, args.feat_mult))
-        dirname = os.path.join(dirname, '{}_{}x{}_{}_{}_dimdec{}_alpha{}_beta{}_bs{}_cpb{}_drop{}{}_bn{}_{}_wd{}_bp{}_detach{}_lr{:.2e}'.format(
-                args.nonlin, args.num_layers, args.num_hidden, args.loss_sup + '-bio' if args.bio else args.loss_sup, args.loss_unsup, args.dim_in_decoder, args.alpha, 
+        dirname = os.path.join(dirname, '{}_{}x{}_{}_{}_dimdec{}_beta{}_bs{}_cpb{}_drop{}{}_bn{}_{}_wd{}_bp{}_detach{}_lr{:.2e}'.format(
+                args.nonlin, args.num_layers, args.num_hidden, args.loss_sup + '-bio' if args.bio else args.loss_sup, args.loss_unsup, args.dim_in_decoder, 
                 args.beta, args.batch_size, args.classes_per_batch, args.dropout, '_cutout{}x{}'.format(args.n_holes, args.length) if args.cutout else '', 
                 int(not args.no_batch_norm), args.optim, args.weight_decay, int(args.backprop), int(not args.no_detach), args.lr))
         
@@ -505,3 +510,5 @@ for epoch in range(start_epoch, args.epochs + 1):
             'test_error': test_error,
         }, os.path.join(dirname, 'chkp_last_epoch.tar')) 
    
+
+
