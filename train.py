@@ -9,7 +9,7 @@ from torch.backends import cudnn
 from bisect import bisect_right
 import math
 import os
-from utils import Cutout, NClassRandomSampler,count_parameters, to_one_hot, similarity_matrix
+from utils import Cutout, count_parameters, to_one_hot, similarity_matrix
 from models import *
 from settings import parse_args
 import wandb
@@ -50,8 +50,8 @@ if args.dataset == 'MNIST':
     dataset_train = datasets.MNIST('../data/MNIST', train=True, download=True, transform=train_transform)
     train_loader = torch.utils.data.DataLoader(
         dataset_train,
-        sampler = None if args.classes_per_batch == 0 else NClassRandomSampler(dataset_train.train_labels.numpy(), args.classes_per_batch, args.batch_size),
-        batch_size=args.batch_size, shuffle=args.classes_per_batch == 0, **kwargs)
+        sampler = None,
+        batch_size=args.batch_size, shuffle=True, **kwargs)
     test_loader = torch.utils.data.DataLoader(
         datasets.MNIST('../data/MNIST', train=False, 
             transform=transforms.Compose([
@@ -74,8 +74,8 @@ elif args.dataset == 'FashionMNIST':
     dataset_train = datasets.FashionMNIST('../data/FashionMNIST', train=True, download=True, transform=train_transform)
     train_loader = torch.utils.data.DataLoader(
         dataset_train,
-        sampler = None if args.classes_per_batch == 0 else NClassRandomSampler(dataset_train.train_labels.numpy(), args.classes_per_batch, args.batch_size),
-        batch_size=args.batch_size, shuffle=args.classes_per_batch == 0, **kwargs)
+        sampler = None,
+        batch_size=args.batch_size, shuffle=True, **kwargs)
     test_loader = torch.utils.data.DataLoader(
         datasets.FashionMNIST('../data/FashionMNIST', train=False, 
             transform=transforms.Compose([
@@ -96,8 +96,8 @@ elif args.dataset == 'KuzushijiMNIST':
     dataset_train = KuzushijiMNIST('../data/KuzushijiMNIST', train=True, download=True, transform=train_transform)
     train_loader = torch.utils.data.DataLoader(
         dataset_train,
-        sampler = None if args.classes_per_batch == 0 else NClassRandomSampler(dataset_train.train_labels.numpy(), args.classes_per_batch, args.batch_size),
-        batch_size=args.batch_size, shuffle=args.classes_per_batch == 0, **kwargs)
+        sampler = None,
+        batch_size=args.batch_size, shuffle=True, **kwargs)
     test_loader = torch.utils.data.DataLoader(
         KuzushijiMNIST('../data/KuzushijiMNIST', train=False, 
             transform=transforms.Compose([
@@ -120,8 +120,8 @@ elif args.dataset == 'CIFAR10':
     dataset_train = datasets.CIFAR10('../data/CIFAR10', train=True, download=True, transform=train_transform)
     train_loader = torch.utils.data.DataLoader(
         dataset_train,
-        sampler = None if args.classes_per_batch == 0 else NClassRandomSampler(dataset_train.train_labels, args.classes_per_batch, args.batch_size),
-        batch_size=args.batch_size, shuffle=args.classes_per_batch == 0, **kwargs)
+        sampler = None,
+        batch_size=args.batch_size, shuffle=True, **kwargs)
     test_loader = torch.utils.data.DataLoader(
         datasets.CIFAR10('../data/CIFAR10', train=False, 
             transform=transforms.Compose([
@@ -144,8 +144,8 @@ elif args.dataset == 'CIFAR100':
     dataset_train = datasets.CIFAR100('../data/CIFAR100', train=True, download=True, transform=train_transform)
     train_loader = torch.utils.data.DataLoader(
         dataset_train,
-        sampler = None if args.classes_per_batch == 0 else NClassRandomSampler(dataset_train.train_labels, args.classes_per_batch, args.batch_size),
-        batch_size=args.batch_size, shuffle=args.classes_per_batch == 0, **kwargs)
+        sampler = None,
+        batch_size=args.batch_size, shuffle=True, **kwargs)
     test_loader = torch.utils.data.DataLoader(
         datasets.CIFAR100('../data/CIFAR100', train=False, 
             transform=transforms.Compose([
@@ -168,8 +168,8 @@ elif args.dataset == 'SVHN':
         datasets.SVHN('../data/SVHN', split='extra', download=True, transform=train_transform)))
     train_loader = torch.utils.data.DataLoader(
         dataset_train,
-        sampler = None if args.classes_per_batch == 0 else NClassRandomSampler(dataset_train.labels, args.classes_per_batch, args.batch_size),
-        batch_size=args.batch_size, shuffle=args.classes_per_batch == 0, **kwargs)
+        sampler = None,
+        batch_size=args.batch_size, shuffle=True, **kwargs)
     test_loader = torch.utils.data.DataLoader(
         datasets.SVHN('../data/SVHN', split='test', download=True,
             transform=transforms.Compose([
@@ -190,8 +190,8 @@ elif args.dataset == 'STL10':
     dataset_train = datasets.STL10('../data/STL10', split='train', download=True, transform=train_transform)
     train_loader = torch.utils.data.DataLoader(
         dataset_train,
-        sampler = None if args.classes_per_batch == 0 else NClassRandomSampler(dataset_train.labels, args.classes_per_batch, args.batch_size),
-        batch_size=args.batch_size, shuffle=args.classes_per_batch == 0, **kwargs)
+        sampler = None,
+        batch_size=args.batch_size, shuffle=True, **kwargs)
     test_loader = torch.utils.data.DataLoader(
         datasets.STL10('../data/STL10', split='test', 
             transform=transforms.Compose([
@@ -215,8 +215,8 @@ elif args.dataset == 'ImageNet':
     labels = np.array([a[1] for a in dataset_train.samples])
     train_loader = torch.utils.data.DataLoader(
         dataset_train,
-        sampler = None if args.classes_per_batch == 0 else NClassRandomSampler(labels, args.classes_per_batch, args.batch_size),
-        batch_size=args.batch_size, shuffle=args.classes_per_batch == 0, **kwargs)
+        sampler = None,
+        batch_size=args.batch_size, shuffle=True, **kwargs)
     test_loader = torch.utils.data.DataLoader(
         datasets.ImageFolder('../data/ImageNet/val', 
             transforms.Compose([
@@ -425,15 +425,7 @@ for epoch in range(start_epoch, args.epochs + 1):
         param_group['lr'] = lr
     model.set_learning_rate(lr)
     
-    # Check if to remove NClassRandomSampler from train_loader
-    if args.classes_per_batch_until_epoch > 0 and epoch > args.classes_per_batch_until_epoch and isinstance(train_loader.sampler, NClassRandomSampler):
-        print('Remove NClassRandomSampler from train_loader')
-        train_loader = torch.utils.data.DataLoader(dataset_train, sampler = None, batch_size=args.batch_size, shuffle=True, **kwargs)
-    
     # Train and test    
     train_loss,train_error,train_print = train(epoch, lr)
     test_loss,test_error,test_print = test(epoch)
-
-   
-
 

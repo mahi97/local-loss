@@ -20,10 +20,6 @@ def parse_args():
                         help='multiply number of CNN features with this number (default: 1)')
     parser.add_argument('--epochs', type=int, default=400,
                         help='number of epochs to train (default: 400)')
-    parser.add_argument('--classes-per-batch', type=int, default=0,
-                        help='aim for this number of different classes per batch during training (default: 0, random batches)')
-    parser.add_argument('--classes-per-batch-until-epoch', type=int, default=0,
-                        help='limit number of classes per batch until this epoch (default: 0, until end of training)')
     parser.add_argument('--lr', type=float, default=5e-4,
                         help='initial learning rate (default: 5e-4)')
     parser.add_argument('--lr-decay-milestones', nargs='+', type=int, default=[200,300,350,375],

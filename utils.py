@@ -43,63 +43,7 @@ class Cutout(object):
 
         return img
 
-class NClassRandomSampler(torch.utils.data.sampler.Sampler):
-    r'''Samples elements such that most batches have N classes per batch.
-    Elements are shuffled before each epoch.
-
-    Arguments:
-        targets: target class for each example in the dataset
-        n_classes_per_batch: the number of classes we want to have per batch
-    '''
-    def __init__(self, targets, n_classes_per_batch, batch_size):
-        self.targets = targets
-        self.n_classes = int(np.max(targets))
-        self.n_classes_per_batch = n_classes_per_batch
-        self.batch_size = batch_size
-
-    def __iter__(self):
-        n = self.n_classes_per_batch
-        
-        ts = list(self.targets)
-        ts_i = list(range(len(self.targets)))
-        
-        np.random.shuffle(ts_i)
-        #algorithm outline: 
-        #1) put n examples in batch
-        #2) fill rest of batch with examples whose class is already in the batch
-        while len(ts_i) > 0:
-            idxs, ts_i = ts_i[:n], ts_i[n:] #pop n off the list
-                
-            t_slice_set = set([ts[i] for i in idxs])
-            
-            #fill up idxs until we have n different classes in it. this should be quick.
-            k = 0
-            while len(t_slice_set) < 10 and k < n*10 and k < len(ts_i):
-                if ts[ts_i[k]] not in t_slice_set:
-                    idxs.append(ts_i.pop(k))
-                    t_slice_set = set([ts[i] for i in idxs])
-                else:
-                    k += 1
-            
-            #fill up idxs with indexes whose classes are in t_slice_set.
-            j = 0
-            while j < len(ts_i) and len(idxs) < self.batch_size:
-                if ts[ts_i[j]] in t_slice_set:
-                    idxs.append(ts_i.pop(j)) #pop is O(n), can we do better?
-                else:
-                    j += 1
-            
-            if len(idxs) < self.batch_size:
-                needed = self.batch_size-len(idxs)
-                idxs += ts_i[:needed]
-                ts_i = ts_i[needed:]
-                    
-            for i in idxs:
-                yield i
-
-    def __len__(self):
-        return len(self.targets)
-    
+   
 def count_parameters(model):
     ''' Count number of parameters in model influenced by global loss. '''
     return sum(p.numel() for p in model.parameters() if p.requires_grad)
