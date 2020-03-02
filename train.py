@@ -230,24 +230,7 @@ else:
     print('No valid dataset is specified')
 
 
-checkpoint = None
-if not args.resume == '':
-    if os.path.isfile(args.resume):
-        checkpoint = torch.load(args.resume)
-        args.model = checkpoint['args'].model
-        args_backup = args
-        args = checkpoint['args']
-        args.optim = args_backup.optim
-        args.momentum = args_backup.momentum
-        args.weight_decay = args_backup.weight_decay
-        args.dropout = args_backup.dropout
-        args.no_batch_norm = args_backup.no_batch_norm
-        args.cutout = args_backup.cutout
-        args.length = args_backup.length
-        print('=> loaded checkpoint "{}" (epoch {})'.format(args.resume, checkpoint['epoch']))
-    else:
-        print('Checkpoint not found: {}'.format(args.resume))
-        
+       
 if args.model == 'mlp':
     model = Net(args.num_layers, args.num_hidden, input_dim, input_ch, num_classes)
 elif args.model.startswith('vgg'):
@@ -284,12 +267,7 @@ elif args.model == 'wresnet40-10a':
     model = Wide_ResNet(40, 10, args.dropout, num_classes, input_ch, input_dim, True)
 else:
     print('No valid model defined')
-
-# Check if to load model
-if checkpoint is not None:
-    model.load_state_dict(checkpoint['state_dict'])
-    args = args_backup
-    
+ 
 if args.cuda:
     model.cuda()
 
@@ -429,7 +407,8 @@ def test(epoch):
     return loss_average, error_percent, string_print
 
 ''' The main training and testing loop '''
-start_epoch = 1 if checkpoint is None else 1 + checkpoint['epoch']
+
+start_epoch = 1 
 for epoch in range(start_epoch, args.epochs + 1):
     # Decide learning rate
     lr = args.lr * args.lr_decay_fact ** bisect_right(args.lr_decay_milestones, (epoch-1))

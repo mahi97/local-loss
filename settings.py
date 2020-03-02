@@ -58,18 +58,10 @@ def parse_args():
                         help='use pre-activation in ResNet')
     parser.add_argument('--seed', type=int, default=1,
                         help='random seed (default: 1)')
-    parser.add_argument('--save-dir', default='results/local-error', type=str,
-                        help='the directory used to save the trained models')
-    parser.add_argument('--resume', default='', type=str,
-                        help='checkpoint to resume training from')
     parser.add_argument('--progress-bar', action='store_true', default=False,
                         help='show progress bar during training')
     parser.add_argument('--no-print-stats', action='store_true', default=False,
                         help='do not print layerwise statistics during training with local loss')
-    parser.add_argument('--bio', action='store_true', default=False,
-                        help='use more biologically plausible versions of pred and sim loss (default: False)')
-    parser.add_argument('--target-proj-size', type=int, default=128,
-                        help='size of target projection back to hidden layers for biologically plausible loss (default: 128')
     parser.add_argument('--cutout', action='store_true', default=False,
                         help='apply cutout regularization')
     parser.add_argument('--n_holes', type=int, default=1,
