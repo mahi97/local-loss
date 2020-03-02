@@ -36,16 +36,12 @@ def parse_args():
                         help='SGD momentum (default: 0.0)')
     parser.add_argument('--weight-decay', type=float, default=0.0,
                         help='weight decay (default: 0.0)')
-    parser.add_argument('--alpha', type=float, default=0.0,
-                        help='unsupervised fraction in similarity matching loss (default: 0.0)')
     parser.add_argument('--beta', type=float, default=0.99,
                         help='fraction of similarity matching loss in predsim loss (default: 0.99)')
     parser.add_argument('--dropout', type=float, default=0.0,
                         help='dropout after each nonlinearity (default: 0.0)')
     parser.add_argument('--loss-sup', default='predsim',
                         help='supervised local loss, sim or pred (default: predsim)')
-    parser.add_argument('--loss-unsup', default='none',
-                        help='unsupervised local loss, none, sim or recon (default: none)')
     parser.add_argument('--nonlin', default='relu',
                         help='nonlinearity, relu or leakyrelu (default: relu)')
     parser.add_argument('--no-similarity-std', action='store_true', default=False,

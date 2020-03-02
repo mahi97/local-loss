@@ -99,8 +99,6 @@ class LocalLossBlockLinear(nn.Module):
         self.batchnorm = not args.no_batch_norm if batchnorm is None else batchnorm
         self.encoder = nn.Linear(num_in, num_out, bias=True)
         
-        if not args.backprop and args.loss_unsup == 'recon':
-            self.decoder_x = nn.Linear(num_out, num_in, bias=True)
         if not args.backprop and (args.loss_sup == 'pred' or args.loss_sup == 'predsim'):
             if args.bio:
                 self.decoder_y = LinearFA(num_out, args.target_proj_size)
@@ -109,7 +107,7 @@ class LocalLossBlockLinear(nn.Module):
             self.decoder_y.weight.data.zero_()
         if not args.backprop and args.bio:
             self.proj_y = nn.Linear(num_classes, args.target_proj_size, bias=False)
-        if not args.backprop and not args.bio and (args.loss_unsup == 'sim' or args.loss_sup == 'sim' or args.loss_sup == 'predsim'):
+        if not args.backprop and not args.bio and (args.loss_sup == 'sim' or args.loss_sup == 'predsim'):
             self.linear_loss = nn.Linear(num_out, num_out, bias=False)
         if self.batchnorm:
             self.bn = torch.nn.BatchNorm1d(num_out)
@@ -176,26 +174,14 @@ class LocalLossBlockLinear(nn.Module):
         # Calculate local loss and update weights
         if (self.training or not args.no_print_stats) and not args.backprop:
             # Calculate hidden layer similarity matrix
-            if args.loss_unsup == 'sim' or args.loss_sup == 'sim' or args.loss_sup == 'predsim':
+            if args.loss_sup == 'sim' or args.loss_sup == 'predsim':
                 if args.bio:
                     h_loss = h
                 else:
                     h_loss = self.linear_loss(h)
                 Rh = similarity_matrix(h_loss)
                 
-            # Calculate unsupervised loss
-            if args.loss_unsup == 'sim':
-                Rx = similarity_matrix(x).detach()
-                loss_unsup = F.mse_loss(Rh, Rx)
-            elif args.loss_unsup == 'recon' and not self.first_layer:
-                x_hat = self.nonlin(self.decoder_x(h))
-                loss_unsup = F.mse_loss(x_hat, x.detach())
-            else:
-                if args.cuda:
-                    loss_unsup = torch.cuda.FloatTensor([0])
-                else:
-                    loss_unsup = torch.FloatTensor([0])
-             
+            
             # Calculate supervised loss
             if args.loss_sup == 'sim':
                 if args.bio:
@@ -236,8 +222,8 @@ class LocalLossBlockLinear(nn.Module):
                     self.correct += y_hat_local.max(1)[1].eq(y).cpu().sum()
                     self.examples += h.size(0)
             
-            # Combine unsupervised and supervised loss
-            loss = args.alpha * loss_unsup + (1 - args.alpha) * loss_sup
+            # Combine supervised loss
+            loss = loss_sup
                                              
             # Single-step back-propagation
             if self.training:
@@ -287,8 +273,6 @@ class LocalLossBlockConv(nn.Module):
         self.post_act = post_act
         self.encoder = nn.Conv2d(ch_in, ch_out, kernel_size, stride=stride, padding=padding, bias=self.bias)
             
-        if not args.backprop and args.loss_unsup == 'recon':
-            self.decoder_x = nn.ConvTranspose2d(ch_out, ch_in, kernel_size, stride=stride, padding=padding)
         if args.bio or (not args.backprop and (args.loss_sup == 'pred' or args.loss_sup == 'predsim')):
             # Resolve average-pooling kernel size in order for flattened dim to match args.dim_in_decoder
             ks_h, ks_w = 1, 1
@@ -316,7 +300,7 @@ class LocalLossBlockConv(nn.Module):
             self.decoder_y.weight.data.zero_()
         if not args.backprop and args.bio:
             self.proj_y = nn.Linear(num_classes, args.target_proj_size, bias=False)
-        if not args.backprop and (args.loss_unsup == 'sim' or args.loss_sup == 'sim' or args.loss_sup == 'predsim'):
+        if not args.backprop and (args.loss_sup == 'sim' or args.loss_sup == 'predsim'):
             self.conv_loss = nn.Conv2d(ch_out, ch_out, 3, stride=1, padding=1, bias=False)
         if not args.no_batch_norm:
             if pre_act:
@@ -406,7 +390,7 @@ class LocalLossBlockConv(nn.Module):
                 h = self.nonlin(h)
 
             # Calculate hidden feature similarity matrix
-            if args.loss_unsup == 'sim' or args.loss_sup == 'sim' or args.loss_sup == 'predsim':
+            if args.loss_sup == 'sim' or args.loss_sup == 'predsim':
                 if args.bio:
                     h_loss = h
                     if self.avg_pool is not None:
@@ -415,19 +399,6 @@ class LocalLossBlockConv(nn.Module):
                     h_loss = self.conv_loss(h)
                 Rh = similarity_matrix(h_loss)                    
           
-            # Calculate unsupervised loss
-            if args.loss_unsup == 'sim':
-                Rx = similarity_matrix(x).detach()
-                loss_unsup = F.mse_loss(Rh, Rx)
-            elif args.loss_unsup == 'recon' and not self.first_layer:
-                x_hat = self.nonlin(self.decoder_x(h))
-                loss_unsup = F.mse_loss(x_hat, x.detach())
-            else:
-                if args.cuda:
-                    loss_unsup = torch.cuda.FloatTensor([0])
-                else:
-                    loss_unsup = torch.FloatTensor([0])
-
             # Calculate supervised loss
             if args.loss_sup == 'sim':
                 if args.bio:
@@ -473,7 +444,7 @@ class LocalLossBlockConv(nn.Module):
                     self.examples += h.size(0)
                 
             # Combine unsupervised and supervised loss
-            loss = args.alpha * loss_unsup + (1 - args.alpha) * loss_sup
+            loss =  loss_sup
                                              
             # Single-step back-propagation
             if self.training:
