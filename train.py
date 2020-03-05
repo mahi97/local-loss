@@ -9,7 +9,7 @@ from torch.backends import cudnn
 from bisect import bisect_right
 import math
 import os
-from utils import Cutout, count_parameters, to_one_hot, similarity_matrix
+from utils import count_parameters, to_one_hot, similarity_matrix
 from models import *
 from settings import parse_args
 import wandb
@@ -45,8 +45,6 @@ if args.dataset == 'MNIST':
             transforms.ToTensor(),
             transforms.Normalize((0.1307,), (0.3081,))
         ])
-    if args.cutout:
-        train_transform.transforms.append(Cutout(n_holes=args.n_holes, length=args.length)) 
     dataset_train = datasets.MNIST('../data/MNIST', train=True, download=True, transform=train_transform)
     train_loader = torch.utils.data.DataLoader(
         dataset_train,
@@ -69,8 +67,6 @@ elif args.dataset == 'FashionMNIST':
             transforms.ToTensor(),
             transforms.Normalize((0.286,), (0.353,))
         ])
-    if args.cutout:
-        train_transform.transforms.append(Cutout(n_holes=args.n_holes, length=args.length))      
     dataset_train = datasets.FashionMNIST('../data/FashionMNIST', train=True, download=True, transform=train_transform)
     train_loader = torch.utils.data.DataLoader(
         dataset_train,
@@ -91,8 +87,6 @@ elif args.dataset == 'KuzushijiMNIST':
             transforms.ToTensor(),
             transforms.Normalize((0.1904,), (0.3475,))
         ])
-    if args.cutout:
-        train_transform.transforms.append(Cutout(n_holes=args.n_holes, length=args.length))
     dataset_train = KuzushijiMNIST('../data/KuzushijiMNIST', train=True, download=True, transform=train_transform)
     train_loader = torch.utils.data.DataLoader(
         dataset_train,
@@ -115,8 +109,6 @@ elif args.dataset == 'CIFAR10':
             transforms.ToTensor(),
             transforms.Normalize((0.424, 0.415, 0.384), (0.283, 0.278, 0.284))
         ])
-    if args.cutout:
-        train_transform.transforms.append(Cutout(n_holes=args.n_holes, length=args.length))
     dataset_train = datasets.CIFAR10('../data/CIFAR10', train=True, download=True, transform=train_transform)
     train_loader = torch.utils.data.DataLoader(
         dataset_train,
@@ -139,8 +131,6 @@ elif args.dataset == 'CIFAR100':
             transforms.ToTensor(),
             transforms.Normalize((0.438, 0.418, 0.377), (0.300, 0.287, 0.294))
         ])
-    if args.cutout:
-        train_transform.transforms.append(Cutout(n_holes=args.n_holes, length=args.length))
     dataset_train = datasets.CIFAR100('../data/CIFAR100', train=True, download=True, transform=train_transform)
     train_loader = torch.utils.data.DataLoader(
         dataset_train,
@@ -161,8 +151,6 @@ elif args.dataset == 'SVHN':
             transforms.ToTensor(),
             transforms.Normalize((0.431, 0.430, 0.446), (0.197, 0.198, 0.199))
         ])
-    if args.cutout:
-        train_transform.transforms.append(Cutout(n_holes=args.n_holes, length=args.length))
     dataset_train = torch.utils.data.ConcatDataset((
         datasets.SVHN('../data/SVHN', split='train', download=True, transform=train_transform),
         datasets.SVHN('../data/SVHN', split='extra', download=True, transform=train_transform)))
@@ -185,8 +173,6 @@ elif args.dataset == 'STL10':
             transforms.ToTensor(),
             transforms.Normalize((0.447, 0.440, 0.407), (0.260, 0.257, 0.271))
         ])
-    if args.cutout:
-        train_transform.transforms.append(Cutout(n_holes=args.n_holes, length=args.length))
     dataset_train = datasets.STL10('../data/STL10', split='train', download=True, transform=train_transform)
     train_loader = torch.utils.data.DataLoader(
         dataset_train,
@@ -209,8 +195,6 @@ elif args.dataset == 'ImageNet':
             transforms.ToTensor(),
             transforms.Normalize((0.485, 0.456, 0.406), (0.229, 0.224, 0.225))
         ])
-    if args.cutout:
-        train_transform.transforms.append(Cutout(n_holes=args.n_holes, length=args.length))
     dataset_train = datasets.ImageFolder('../data/ImageNet/train', transform=train_transform)
     labels = np.array([a[1] for a in dataset_train.samples])
     train_loader = torch.utils.data.DataLoader(

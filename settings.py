@@ -58,12 +58,6 @@ def parse_args():
                         help='show progress bar during training')
     parser.add_argument('--no-print-stats', action='store_true', default=False,
                         help='do not print layerwise statistics during training with local loss')
-    parser.add_argument('--cutout', action='store_true', default=False,
-                        help='apply cutout regularization')
-    parser.add_argument('--n_holes', type=int, default=1,
-                        help='number of holes to cut out from image')
-    parser.add_argument('--length', type=int, default=16,
-                        help='length of the cutout holes in pixels')
     args = parser.parse_args()
     args.cuda = not args.no_cuda and torch.cuda.is_available()
     return args
