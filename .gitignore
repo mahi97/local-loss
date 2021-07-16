@@ -1,1 +1,3 @@
 __pycache__/**
+results/**/*.tar
+**/__pycache__/**
