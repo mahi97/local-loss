@@ -1,0 +1,115 @@
+Namespace(alpha=0.0, backprop=True, batch_size=128, beta=0.99, bio=False, classes_per_batch=0, classes_per_batch_until_epoch=0, cuda=True, cutout=False, dataset='MNIST', dim_in_decoder=4096, dropout=0.1, epochs=100, feat_mult=1, length=16, loss_sup='predsim', loss_unsup='none', lr=0.0005, lr_decay_fact=0.25, lr_decay_milestones=[50, 75, 89, 94], model='mlp', momentum=0.0, n_holes=1, no_batch_norm=False, no_cuda=False, no_detach=False, no_print_stats=False, no_similarity_std=False, nonlin='relu', num_hidden=1024, num_layers=3, optim='adam', pre_act=False, progress_bar=False, resume='', save_dir='./results/local-error', seed=1, target_proj_size=128, weight_decay=0.0)
+
+Net(
+  (layers): ModuleList(
+    (0): LocalLossBlockLinear(
+      (encoder): Linear(in_features=784, out_features=1024, bias=True)
+      (bn): BatchNorm1d(1024, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (nonlin): ReLU(inplace=True)
+      (dropout): Dropout(p=0.1, inplace=False)
+    )
+    (1): LocalLossBlockLinear(
+      (encoder): Linear(in_features=1024, out_features=1024, bias=True)
+      (bn): BatchNorm1d(1024, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (nonlin): ReLU(inplace=True)
+      (dropout): Dropout(p=0.1, inplace=False)
+    )
+    (2): LocalLossBlockLinear(
+      (encoder): Linear(in_features=1024, out_features=1024, bias=True)
+      (bn): BatchNorm1d(1024, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (nonlin): ReLU(inplace=True)
+      (dropout): Dropout(p=0.1, inplace=False)
+    )
+  )
+  (layer_out): Linear(in_features=1024, out_features=10, bias=True)
+)
+
+Adam (
+Parameter Group 0
+    amsgrad: False
+    betas: (0.9, 0.999)
+    eps: 1e-08
+    lr: 0.0005
+    weight_decay: 0.0
+)
+
+Model mlp has 2919434 parameters influenced by global loss
+
+Train epoch=1, lr=5.00e-04, loss_local=0.0000, loss_global=0.2940, error=9.248%, mem=48MiB, max_mem=57MiB
+Test loss_global=0.1017, error=3.330%
+
+Train epoch=2, lr=5.00e-04, loss_local=0.0000, loss_global=0.1449, error=4.620%, mem=48MiB, max_mem=57MiB
+Test loss_global=0.0770, error=2.640%
+
+Train epoch=3, lr=5.00e-04, loss_local=0.0000, loss_global=0.1169, error=3.758%, mem=48MiB, max_mem=57MiB
+Test loss_global=0.0728, error=2.470%
+
+Train epoch=4, lr=5.00e-04, loss_local=0.0000, loss_global=0.1023, error=3.198%, mem=48MiB, max_mem=57MiB
+Test loss_global=0.0638, error=2.140%
+
+Train epoch=5, lr=5.00e-04, loss_local=0.0000, loss_global=0.0950, error=3.088%, mem=48MiB, max_mem=57MiB
+Test loss_global=0.0536, error=1.810%
+
+Train epoch=6, lr=5.00e-04, loss_local=0.0000, loss_global=0.0848, error=2.650%, mem=48MiB, max_mem=57MiB
+Test loss_global=0.0525, error=1.720%
+
+Train epoch=7, lr=5.00e-04, loss_local=0.0000, loss_global=0.0788, error=2.603%, mem=48MiB, max_mem=57MiB
+Test loss_global=0.0476, error=1.580%
+
+Train epoch=8, lr=5.00e-04, loss_local=0.0000, loss_global=0.0745, error=2.378%, mem=48MiB, max_mem=57MiB
+Test loss_global=0.0447, error=1.530%
+
+Train epoch=9, lr=5.00e-04, loss_local=0.0000, loss_global=0.0692, error=2.198%, mem=48MiB, max_mem=57MiB
+Test loss_global=0.0465, error=1.650%
+
+Train epoch=10, lr=5.00e-04, loss_local=0.0000, loss_global=0.0686, error=2.167%, mem=48MiB, max_mem=57MiB
+Test loss_global=0.0384, error=1.280%
+
+Train epoch=11, lr=5.00e-04, loss_local=0.0000, loss_global=0.0650, error=2.058%, mem=48MiB, max_mem=57MiB
+Test loss_global=0.0434, error=1.390%
+
+Train epoch=12, lr=5.00e-04, loss_local=0.0000, loss_global=0.0597, error=1.937%, mem=48MiB, max_mem=57MiB
+Test loss_global=0.0419, error=1.470%
+
+Train epoch=13, lr=5.00e-04, loss_local=0.0000, loss_global=0.0583, error=1.853%, mem=48MiB, max_mem=57MiB
+Test loss_global=0.0377, error=1.220%
+
+Train epoch=14, lr=5.00e-04, loss_local=0.0000, loss_global=0.0546, error=1.735%, mem=48MiB, max_mem=57MiB
+Test loss_global=0.0335, error=1.150%
+
+Train epoch=15, lr=5.00e-04, loss_local=0.0000, loss_global=0.0520, error=1.718%, mem=48MiB, max_mem=57MiB
+Test loss_global=0.0380, error=1.370%
+
+Train epoch=16, lr=5.00e-04, loss_local=0.0000, loss_global=0.0529, error=1.712%, mem=48MiB, max_mem=57MiB
+Test loss_global=0.0392, error=1.420%
+
+Train epoch=17, lr=5.00e-04, loss_local=0.0000, loss_global=0.0507, error=1.620%, mem=48MiB, max_mem=57MiB
+Test loss_global=0.0387, error=1.240%
+
+Train epoch=18, lr=5.00e-04, loss_local=0.0000, loss_global=0.0495, error=1.528%, mem=48MiB, max_mem=57MiB
+Test loss_global=0.0307, error=1.020%
+
+Train epoch=19, lr=5.00e-04, loss_local=0.0000, loss_global=0.0485, error=1.563%, mem=48MiB, max_mem=57MiB
+Test loss_global=0.0290, error=1.080%
+
+Train epoch=20, lr=5.00e-04, loss_local=0.0000, loss_global=0.0453, error=1.427%, mem=48MiB, max_mem=57MiB
+Test loss_global=0.0342, error=1.090%
+
+Train epoch=21, lr=5.00e-04, loss_local=0.0000, loss_global=0.0454, error=1.465%, mem=48MiB, max_mem=57MiB
+Test loss_global=0.0319, error=1.070%
+
+Train epoch=22, lr=5.00e-04, loss_local=0.0000, loss_global=0.0432, error=1.442%, mem=48MiB, max_mem=57MiB
+Test loss_global=0.0311, error=0.940%
+
+Train epoch=23, lr=5.00e-04, loss_local=0.0000, loss_global=0.0393, error=1.227%, mem=48MiB, max_mem=57MiB
+Test loss_global=0.0298, error=0.990%
+
+Train epoch=24, lr=5.00e-04, loss_local=0.0000, loss_global=0.0400, error=1.265%, mem=48MiB, max_mem=57MiB
+Test loss_global=0.0282, error=0.990%
+
+Train epoch=25, lr=5.00e-04, loss_local=0.0000, loss_global=0.0388, error=1.252%, mem=48MiB, max_mem=57MiB
+Test loss_global=0.0274, error=0.800%
+
+Train epoch=26, lr=5.00e-04, loss_local=0.0000, loss_global=0.0389, error=1.247%, mem=48MiB, max_mem=57MiB
+Test loss_global=0.0349, error=1.110%
+

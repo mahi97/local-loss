@@ -1,0 +1,1024 @@
+Namespace(alpha=0.0, backprop=False, batch_size=128, beta=0.99, bio=False, classes_per_batch=0, classes_per_batch_until_epoch=0, cuda=True, cutout=False, dataset='CIFAR10', dim_in_decoder=4096, dropout=0.1, epochs=400, feat_mult=1, length=16, loss_sup='predsim', loss_unsup='none', lr=0.0005, lr_decay_fact=0.25, lr_decay_milestones=[200, 300, 350, 375], model='mlp', momentum=0.0, n_holes=1, no_batch_norm=False, no_cuda=False, no_detach=False, no_print_stats=False, no_similarity_std=False, nonlin='leakyrelu', num_hidden=3000, num_layers=3, optim='adam', pre_act=False, progress_bar=False, resume='', save_dir='./results/local-error', seed=1, target_proj_size=128, weight_decay=0.0)
+
+Net(
+  (layers): ModuleList(
+    (0): LocalLossBlockLinear(
+      (encoder): Linear(in_features=3072, out_features=3000, bias=True)
+      (decoder_y): Linear(in_features=3000, out_features=10, bias=True)
+      (linear_loss): Linear(in_features=3000, out_features=3000, bias=False)
+      (bn): BatchNorm1d(3000, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (nonlin): LeakyReLU(negative_slope=0.01, inplace=True)
+      (dropout): Dropout(p=0.1, inplace=False)
+    )
+    (1): LocalLossBlockLinear(
+      (encoder): Linear(in_features=3000, out_features=3000, bias=True)
+      (decoder_y): Linear(in_features=3000, out_features=10, bias=True)
+      (linear_loss): Linear(in_features=3000, out_features=3000, bias=False)
+      (bn): BatchNorm1d(3000, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (nonlin): LeakyReLU(negative_slope=0.01, inplace=True)
+      (dropout): Dropout(p=0.1, inplace=False)
+    )
+    (2): LocalLossBlockLinear(
+      (encoder): Linear(in_features=3000, out_features=3000, bias=True)
+      (decoder_y): Linear(in_features=3000, out_features=10, bias=True)
+      (linear_loss): Linear(in_features=3000, out_features=3000, bias=False)
+      (bn): BatchNorm1d(3000, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (nonlin): LeakyReLU(negative_slope=0.01, inplace=True)
+      (dropout): Dropout(p=0.1, inplace=False)
+    )
+  )
+  (layer_out): Linear(in_features=3000, out_features=10, bias=True)
+)
+
+Adam (
+Parameter Group 0
+    amsgrad: False
+    betas: (0.9, 0.999)
+    eps: 1e-08
+    lr: 0.0005
+    weight_decay: 0.0
+)
+
+Model mlp has 30010 parameters influenced by global loss
+
+Train epoch=1, lr=5.00e-04, loss_local=0.4292, loss_global=0.0196, error=68.398%, mem=874MiB, max_mem=956MiB
+Linear(in_features=3072, out_features=3000, bias=True), loss_sim=0.1200, loss_pred=0.0180, error=64.734%, num_examples=50000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.1181, loss_pred=0.0188, error=65.518%, num_examples=50000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.1347, loss_pred=0.0196, error=68.386%, num_examples=50000
+Test loss_global=0.0171, error=58.720%
+Linear(in_features=3072, out_features=3000, bias=True), loss_sim=0.1365, loss_pred=0.0164, error=58.300%, num_examples=10000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.1337, loss_pred=0.0166, error=57.590%, num_examples=10000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.1313, loss_pred=0.0172, error=58.590%, num_examples=10000
+
+Train epoch=2, lr=5.00e-04, loss_local=0.3824, loss_global=0.0169, error=59.932%, mem=874MiB, max_mem=956MiB
+Linear(in_features=3072, out_features=3000, bias=True), loss_sim=0.1117, loss_pred=0.0163, error=58.274%, num_examples=50000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.1104, loss_pred=0.0164, error=58.438%, num_examples=50000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.1107, loss_pred=0.0168, error=59.564%, num_examples=50000
+Test loss_global=0.0154, error=53.700%
+Linear(in_features=3072, out_features=3000, bias=True), loss_sim=0.1410, loss_pred=0.0154, error=54.590%, num_examples=10000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.1306, loss_pred=0.0150, error=52.250%, num_examples=10000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.1260, loss_pred=0.0153, error=53.510%, num_examples=10000
+
+Train epoch=3, lr=5.00e-04, loss_local=0.3735, loss_global=0.0161, error=56.666%, mem=874MiB, max_mem=956MiB
+Linear(in_features=3072, out_features=3000, bias=True), loss_sim=0.1099, loss_pred=0.0157, error=55.910%, num_examples=50000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.1080, loss_pred=0.0157, error=55.654%, num_examples=50000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.1081, loss_pred=0.0160, error=56.496%, num_examples=50000
+Test loss_global=0.0151, error=51.860%
+Linear(in_features=3072, out_features=3000, bias=True), loss_sim=0.1245, loss_pred=0.0151, error=53.490%, num_examples=10000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.1232, loss_pred=0.0148, error=51.250%, num_examples=10000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.1197, loss_pred=0.0150, error=51.930%, num_examples=10000
+
+Train epoch=4, lr=5.00e-04, loss_local=0.3691, loss_global=0.0156, error=55.276%, mem=874MiB, max_mem=956MiB
+Linear(in_features=3072, out_features=3000, bias=True), loss_sim=0.1092, loss_pred=0.0155, error=54.950%, num_examples=50000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.1068, loss_pred=0.0153, error=54.546%, num_examples=50000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.1069, loss_pred=0.0155, error=54.864%, num_examples=50000
+Test loss_global=0.0143, error=50.570%
+Linear(in_features=3072, out_features=3000, bias=True), loss_sim=0.1233, loss_pred=0.0147, error=52.550%, num_examples=10000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.1159, loss_pred=0.0142, error=50.770%, num_examples=10000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.1132, loss_pred=0.0143, error=50.630%, num_examples=10000
+
+Train epoch=5, lr=5.00e-04, loss_local=0.3635, loss_global=0.0153, error=53.910%, mem=874MiB, max_mem=956MiB
+Linear(in_features=3072, out_features=3000, bias=True), loss_sim=0.1080, loss_pred=0.0152, error=54.030%, num_examples=50000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.1051, loss_pred=0.0149, error=53.138%, num_examples=50000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.1052, loss_pred=0.0152, error=53.674%, num_examples=50000
+Test loss_global=0.0144, error=50.470%
+Linear(in_features=3072, out_features=3000, bias=True), loss_sim=0.1200, loss_pred=0.0145, error=51.400%, num_examples=10000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.1128, loss_pred=0.0141, error=49.700%, num_examples=10000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.1114, loss_pred=0.0144, error=51.140%, num_examples=10000
+
+Train epoch=6, lr=5.00e-04, loss_local=0.3592, loss_global=0.0148, error=52.606%, mem=874MiB, max_mem=956MiB
+Linear(in_features=3072, out_features=3000, bias=True), loss_sim=0.1071, loss_pred=0.0149, error=52.750%, num_examples=50000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.1039, loss_pred=0.0145, error=51.998%, num_examples=50000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.1040, loss_pred=0.0147, error=52.384%, num_examples=50000
+Test loss_global=0.0144, error=49.910%
+Linear(in_features=3072, out_features=3000, bias=True), loss_sim=0.1180, loss_pred=0.0148, error=51.890%, num_examples=10000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.1111, loss_pred=0.0147, error=50.270%, num_examples=10000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.1094, loss_pred=0.0145, error=49.950%, num_examples=10000
+
+Train epoch=7, lr=5.00e-04, loss_local=0.3573, loss_global=0.0146, error=51.666%, mem=874MiB, max_mem=956MiB
+Linear(in_features=3072, out_features=3000, bias=True), loss_sim=0.1070, loss_pred=0.0148, error=52.334%, num_examples=50000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.1035, loss_pred=0.0143, error=50.948%, num_examples=50000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.1033, loss_pred=0.0145, error=51.398%, num_examples=50000
+Test loss_global=0.0153, error=51.270%
+Linear(in_features=3072, out_features=3000, bias=True), loss_sim=0.1226, loss_pred=0.0141, error=49.160%, num_examples=10000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.1187, loss_pred=0.0139, error=48.850%, num_examples=10000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.1162, loss_pred=0.0153, error=51.340%, num_examples=10000
+
+Train epoch=8, lr=5.00e-04, loss_local=0.3542, loss_global=0.0144, error=50.776%, mem=874MiB, max_mem=956MiB
+Linear(in_features=3072, out_features=3000, bias=True), loss_sim=0.1064, loss_pred=0.0146, error=52.044%, num_examples=50000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.1025, loss_pred=0.0141, error=50.270%, num_examples=50000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.1023, loss_pred=0.0143, error=50.544%, num_examples=50000
+Test loss_global=0.0136, error=47.610%
+Linear(in_features=3072, out_features=3000, bias=True), loss_sim=0.1139, loss_pred=0.0139, error=48.530%, num_examples=10000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.1050, loss_pred=0.0133, error=46.820%, num_examples=10000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.1033, loss_pred=0.0137, error=47.730%, num_examples=10000
+
+Train epoch=9, lr=5.00e-04, loss_local=0.3515, loss_global=0.0142, error=50.374%, mem=874MiB, max_mem=956MiB
+Linear(in_features=3072, out_features=3000, bias=True), loss_sim=0.1059, loss_pred=0.0144, error=50.988%, num_examples=50000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.1018, loss_pred=0.0138, error=49.628%, num_examples=50000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.1015, loss_pred=0.0141, error=50.158%, num_examples=50000
+Test loss_global=0.0133, error=46.480%
+Linear(in_features=3072, out_features=3000, bias=True), loss_sim=0.1155, loss_pred=0.0138, error=49.030%, num_examples=10000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.1063, loss_pred=0.0131, error=45.920%, num_examples=10000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.1026, loss_pred=0.0134, error=46.560%, num_examples=10000
+
+Train epoch=10, lr=5.00e-04, loss_local=0.3493, loss_global=0.0140, error=49.824%, mem=874MiB, max_mem=956MiB
+Linear(in_features=3072, out_features=3000, bias=True), loss_sim=0.1055, loss_pred=0.0143, error=50.666%, num_examples=50000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.1012, loss_pred=0.0137, error=49.046%, num_examples=50000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.1007, loss_pred=0.0139, error=49.420%, num_examples=50000
+Test loss_global=0.0132, error=46.320%
+Linear(in_features=3072, out_features=3000, bias=True), loss_sim=0.1130, loss_pred=0.0136, error=48.330%, num_examples=10000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.1043, loss_pred=0.0127, error=44.700%, num_examples=10000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.1021, loss_pred=0.0133, error=46.600%, num_examples=10000
+
+Train epoch=11, lr=5.00e-04, loss_local=0.3467, loss_global=0.0138, error=48.838%, mem=874MiB, max_mem=956MiB
+Linear(in_features=3072, out_features=3000, bias=True), loss_sim=0.1051, loss_pred=0.0141, error=50.032%, num_examples=50000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.1004, loss_pred=0.0134, error=47.910%, num_examples=50000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0998, loss_pred=0.0137, error=48.618%, num_examples=50000
+Test loss_global=0.0128, error=45.060%
+Linear(in_features=3072, out_features=3000, bias=True), loss_sim=0.1155, loss_pred=0.0134, error=47.760%, num_examples=10000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.1055, loss_pred=0.0128, error=45.850%, num_examples=10000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.1011, loss_pred=0.0128, error=44.980%, num_examples=10000
+
+Train epoch=12, lr=5.00e-04, loss_local=0.3443, loss_global=0.0136, error=48.126%, mem=874MiB, max_mem=956MiB
+Linear(in_features=3072, out_features=3000, bias=True), loss_sim=0.1047, loss_pred=0.0140, error=49.758%, num_examples=50000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0998, loss_pred=0.0133, error=47.452%, num_examples=50000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0990, loss_pred=0.0135, error=47.932%, num_examples=50000
+Test loss_global=0.0130, error=46.800%
+Linear(in_features=3072, out_features=3000, bias=True), loss_sim=0.1158, loss_pred=0.0136, error=47.920%, num_examples=10000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.1044, loss_pred=0.0128, error=45.720%, num_examples=10000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0995, loss_pred=0.0131, error=46.650%, num_examples=10000
+
+Train epoch=13, lr=5.00e-04, loss_local=0.3437, loss_global=0.0135, error=47.846%, mem=874MiB, max_mem=956MiB
+Linear(in_features=3072, out_features=3000, bias=True), loss_sim=0.1047, loss_pred=0.0139, error=49.160%, num_examples=50000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0997, loss_pred=0.0132, error=47.026%, num_examples=50000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0989, loss_pred=0.0134, error=47.598%, num_examples=50000
+Test loss_global=0.0124, error=43.760%
+Linear(in_features=3072, out_features=3000, bias=True), loss_sim=0.1101, loss_pred=0.0130, error=45.830%, num_examples=10000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.1012, loss_pred=0.0124, error=43.840%, num_examples=10000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0980, loss_pred=0.0125, error=44.100%, num_examples=10000
+
+Train epoch=14, lr=5.00e-04, loss_local=0.3412, loss_global=0.0133, error=47.110%, mem=874MiB, max_mem=956MiB
+Linear(in_features=3072, out_features=3000, bias=True), loss_sim=0.1042, loss_pred=0.0139, error=48.984%, num_examples=50000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0989, loss_pred=0.0130, error=46.502%, num_examples=50000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0980, loss_pred=0.0132, error=46.864%, num_examples=50000
+Test loss_global=0.0128, error=44.810%
+Linear(in_features=3072, out_features=3000, bias=True), loss_sim=0.1109, loss_pred=0.0133, error=47.010%, num_examples=10000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.1011, loss_pred=0.0126, error=44.820%, num_examples=10000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0980, loss_pred=0.0129, error=45.240%, num_examples=10000
+
+Train epoch=15, lr=5.00e-04, loss_local=0.3393, loss_global=0.0132, error=46.356%, mem=874MiB, max_mem=956MiB
+Linear(in_features=3072, out_features=3000, bias=True), loss_sim=0.1039, loss_pred=0.0137, error=48.564%, num_examples=50000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0984, loss_pred=0.0128, error=45.766%, num_examples=50000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0973, loss_pred=0.0130, error=46.124%, num_examples=50000
+Test loss_global=0.0123, error=43.180%
+Linear(in_features=3072, out_features=3000, bias=True), loss_sim=0.1112, loss_pred=0.0129, error=44.910%, num_examples=10000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0992, loss_pred=0.0122, error=42.740%, num_examples=10000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0962, loss_pred=0.0123, error=43.280%, num_examples=10000
+
+Train epoch=16, lr=5.00e-04, loss_local=0.3387, loss_global=0.0130, error=46.244%, mem=874MiB, max_mem=956MiB
+Linear(in_features=3072, out_features=3000, bias=True), loss_sim=0.1040, loss_pred=0.0136, error=48.122%, num_examples=50000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0983, loss_pred=0.0127, error=45.404%, num_examples=50000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0971, loss_pred=0.0129, error=45.916%, num_examples=50000
+Test loss_global=0.0122, error=42.830%
+Linear(in_features=3072, out_features=3000, bias=True), loss_sim=0.1085, loss_pred=0.0130, error=45.640%, num_examples=10000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0994, loss_pred=0.0122, error=43.550%, num_examples=10000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0953, loss_pred=0.0121, error=42.580%, num_examples=10000
+
+Train epoch=17, lr=5.00e-04, loss_local=0.3366, loss_global=0.0129, error=45.444%, mem=874MiB, max_mem=956MiB
+Linear(in_features=3072, out_features=3000, bias=True), loss_sim=0.1037, loss_pred=0.0135, error=47.616%, num_examples=50000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0977, loss_pred=0.0126, error=44.870%, num_examples=50000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0964, loss_pred=0.0128, error=45.354%, num_examples=50000
+Test loss_global=0.0124, error=43.350%
+Linear(in_features=3072, out_features=3000, bias=True), loss_sim=0.1096, loss_pred=0.0130, error=45.290%, num_examples=10000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0996, loss_pred=0.0123, error=43.700%, num_examples=10000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0965, loss_pred=0.0125, error=43.820%, num_examples=10000
+
+Train epoch=18, lr=5.00e-04, loss_local=0.3354, loss_global=0.0128, error=45.324%, mem=874MiB, max_mem=956MiB
+Linear(in_features=3072, out_features=3000, bias=True), loss_sim=0.1034, loss_pred=0.0134, error=47.448%, num_examples=50000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0973, loss_pred=0.0125, error=44.410%, num_examples=50000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0961, loss_pred=0.0126, error=45.158%, num_examples=50000
+Test loss_global=0.0131, error=44.330%
+Linear(in_features=3072, out_features=3000, bias=True), loss_sim=0.1078, loss_pred=0.0128, error=44.870%, num_examples=10000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0977, loss_pred=0.0120, error=42.550%, num_examples=10000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0947, loss_pred=0.0130, error=44.420%, num_examples=10000
+
+Train epoch=19, lr=5.00e-04, loss_local=0.3324, loss_global=0.0126, error=44.464%, mem=874MiB, max_mem=956MiB
+Linear(in_features=3072, out_features=3000, bias=True), loss_sim=0.1028, loss_pred=0.0133, error=46.932%, num_examples=50000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0964, loss_pred=0.0123, error=43.658%, num_examples=50000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0949, loss_pred=0.0125, error=44.146%, num_examples=50000
+Test loss_global=0.0123, error=42.000%
+Linear(in_features=3072, out_features=3000, bias=True), loss_sim=0.1087, loss_pred=0.0129, error=45.050%, num_examples=10000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0976, loss_pred=0.0121, error=42.210%, num_examples=10000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0947, loss_pred=0.0123, error=42.250%, num_examples=10000
+
+Train epoch=20, lr=5.00e-04, loss_local=0.3316, loss_global=0.0125, error=44.152%, mem=874MiB, max_mem=956MiB
+Linear(in_features=3072, out_features=3000, bias=True), loss_sim=0.1027, loss_pred=0.0133, error=46.922%, num_examples=50000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0963, loss_pred=0.0122, error=43.454%, num_examples=50000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0947, loss_pred=0.0124, error=43.596%, num_examples=50000
+Test loss_global=0.0119, error=42.150%
+Linear(in_features=3072, out_features=3000, bias=True), loss_sim=0.1083, loss_pred=0.0126, error=44.230%, num_examples=10000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0979, loss_pred=0.0120, error=42.350%, num_examples=10000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0950, loss_pred=0.0119, error=42.000%, num_examples=10000
+
+Train epoch=21, lr=5.00e-04, loss_local=0.3294, loss_global=0.0124, error=43.738%, mem=874MiB, max_mem=956MiB
+Linear(in_features=3072, out_features=3000, bias=True), loss_sim=0.1022, loss_pred=0.0132, error=46.312%, num_examples=50000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0956, loss_pred=0.0121, error=42.920%, num_examples=50000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0940, loss_pred=0.0123, error=43.358%, num_examples=50000
+Test loss_global=0.0119, error=42.240%
+Linear(in_features=3072, out_features=3000, bias=True), loss_sim=0.1068, loss_pred=0.0124, error=43.100%, num_examples=10000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0954, loss_pred=0.0117, error=41.430%, num_examples=10000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0924, loss_pred=0.0118, error=42.020%, num_examples=10000
+
+Train epoch=22, lr=5.00e-04, loss_local=0.3291, loss_global=0.0123, error=43.644%, mem=874MiB, max_mem=956MiB
+Linear(in_features=3072, out_features=3000, bias=True), loss_sim=0.1024, loss_pred=0.0131, error=46.236%, num_examples=50000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0956, loss_pred=0.0120, error=43.006%, num_examples=50000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0938, loss_pred=0.0122, error=43.138%, num_examples=50000
+Test loss_global=0.0116, error=40.310%
+Linear(in_features=3072, out_features=3000, bias=True), loss_sim=0.1060, loss_pred=0.0123, error=42.890%, num_examples=10000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0947, loss_pred=0.0114, error=40.200%, num_examples=10000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0914, loss_pred=0.0115, error=40.310%, num_examples=10000
+
+Train epoch=23, lr=5.00e-04, loss_local=0.3275, loss_global=0.0121, error=42.852%, mem=874MiB, max_mem=956MiB
+Linear(in_features=3072, out_features=3000, bias=True), loss_sim=0.1021, loss_pred=0.0130, error=45.872%, num_examples=50000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0951, loss_pred=0.0119, error=42.240%, num_examples=50000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0932, loss_pred=0.0120, error=42.630%, num_examples=50000
+Test loss_global=0.0116, error=40.280%
+Linear(in_features=3072, out_features=3000, bias=True), loss_sim=0.1058, loss_pred=0.0123, error=42.970%, num_examples=10000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0951, loss_pred=0.0115, error=40.660%, num_examples=10000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0920, loss_pred=0.0116, error=40.340%, num_examples=10000
+
+Train epoch=24, lr=5.00e-04, loss_local=0.3267, loss_global=0.0120, error=42.636%, mem=874MiB, max_mem=956MiB
+Linear(in_features=3072, out_features=3000, bias=True), loss_sim=0.1021, loss_pred=0.0130, error=45.686%, num_examples=50000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0950, loss_pred=0.0118, error=42.252%, num_examples=50000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0929, loss_pred=0.0119, error=42.418%, num_examples=50000
+Test loss_global=0.0116, error=40.060%
+Linear(in_features=3072, out_features=3000, bias=True), loss_sim=0.1053, loss_pred=0.0122, error=42.540%, num_examples=10000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0941, loss_pred=0.0115, error=40.200%, num_examples=10000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0906, loss_pred=0.0115, error=40.180%, num_examples=10000
+
+Train epoch=25, lr=5.00e-04, loss_local=0.3241, loss_global=0.0118, error=41.682%, mem=874MiB, max_mem=956MiB
+Linear(in_features=3072, out_features=3000, bias=True), loss_sim=0.1016, loss_pred=0.0129, error=45.198%, num_examples=50000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0942, loss_pred=0.0117, error=41.484%, num_examples=50000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0921, loss_pred=0.0117, error=41.418%, num_examples=50000
+Test loss_global=0.0115, error=40.670%
+Linear(in_features=3072, out_features=3000, bias=True), loss_sim=0.1047, loss_pred=0.0123, error=42.830%, num_examples=10000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0940, loss_pred=0.0114, error=40.440%, num_examples=10000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0910, loss_pred=0.0116, error=40.900%, num_examples=10000
+
+Train epoch=26, lr=5.00e-04, loss_local=0.3235, loss_global=0.0118, error=41.902%, mem=874MiB, max_mem=956MiB
+Linear(in_features=3072, out_features=3000, bias=True), loss_sim=0.1015, loss_pred=0.0128, error=45.094%, num_examples=50000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0941, loss_pred=0.0116, error=41.340%, num_examples=50000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0918, loss_pred=0.0117, error=41.642%, num_examples=50000
+Test loss_global=0.0113, error=40.120%
+Linear(in_features=3072, out_features=3000, bias=True), loss_sim=0.1044, loss_pred=0.0122, error=43.020%, num_examples=10000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0935, loss_pred=0.0113, error=40.150%, num_examples=10000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0901, loss_pred=0.0114, error=40.310%, num_examples=10000
+
+Train epoch=27, lr=5.00e-04, loss_local=0.3224, loss_global=0.0118, error=41.604%, mem=874MiB, max_mem=956MiB
+Linear(in_features=3072, out_features=3000, bias=True), loss_sim=0.1013, loss_pred=0.0128, error=44.894%, num_examples=50000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0937, loss_pred=0.0115, error=41.008%, num_examples=50000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0915, loss_pred=0.0116, error=41.378%, num_examples=50000
+Test loss_global=0.0114, error=39.150%
+Linear(in_features=3072, out_features=3000, bias=True), loss_sim=0.1049, loss_pred=0.0122, error=42.460%, num_examples=10000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0931, loss_pred=0.0113, error=39.220%, num_examples=10000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0896, loss_pred=0.0113, error=39.050%, num_examples=10000
+
+Train epoch=28, lr=5.00e-04, loss_local=0.3203, loss_global=0.0116, error=40.990%, mem=874MiB, max_mem=956MiB
+Linear(in_features=3072, out_features=3000, bias=True), loss_sim=0.1009, loss_pred=0.0127, error=44.566%, num_examples=50000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0931, loss_pred=0.0114, error=40.544%, num_examples=50000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0907, loss_pred=0.0115, error=40.624%, num_examples=50000
+Test loss_global=0.0115, error=40.030%
+Linear(in_features=3072, out_features=3000, bias=True), loss_sim=0.1045, loss_pred=0.0124, error=43.420%, num_examples=10000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0939, loss_pred=0.0114, error=40.090%, num_examples=10000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0903, loss_pred=0.0116, error=40.110%, num_examples=10000
+
+Train epoch=29, lr=5.00e-04, loss_local=0.3196, loss_global=0.0115, error=40.606%, mem=874MiB, max_mem=956MiB
+Linear(in_features=3072, out_features=3000, bias=True), loss_sim=0.1009, loss_pred=0.0126, error=44.364%, num_examples=50000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0929, loss_pred=0.0113, error=39.992%, num_examples=50000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0904, loss_pred=0.0114, error=40.338%, num_examples=50000
+Test loss_global=0.0110, error=39.330%
+Linear(in_features=3072, out_features=3000, bias=True), loss_sim=0.1038, loss_pred=0.0119, error=41.400%, num_examples=10000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0926, loss_pred=0.0111, error=39.390%, num_examples=10000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0892, loss_pred=0.0110, error=39.330%, num_examples=10000
+
+Train epoch=30, lr=5.00e-04, loss_local=0.3175, loss_global=0.0114, error=40.258%, mem=874MiB, max_mem=956MiB
+Linear(in_features=3072, out_features=3000, bias=True), loss_sim=0.1005, loss_pred=0.0125, error=43.974%, num_examples=50000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0923, loss_pred=0.0112, error=39.756%, num_examples=50000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0897, loss_pred=0.0113, error=40.018%, num_examples=50000
+Test loss_global=0.0111, error=38.990%
+Linear(in_features=3072, out_features=3000, bias=True), loss_sim=0.1036, loss_pred=0.0122, error=42.460%, num_examples=10000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0922, loss_pred=0.0112, error=39.300%, num_examples=10000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0895, loss_pred=0.0112, error=39.160%, num_examples=10000
+
+Train epoch=31, lr=5.00e-04, loss_local=0.3179, loss_global=0.0113, error=40.228%, mem=874MiB, max_mem=956MiB
+Linear(in_features=3072, out_features=3000, bias=True), loss_sim=0.1006, loss_pred=0.0126, error=44.138%, num_examples=50000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0924, loss_pred=0.0112, error=39.924%, num_examples=50000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0898, loss_pred=0.0112, error=39.976%, num_examples=50000
+Test loss_global=0.0114, error=39.260%
+Linear(in_features=3072, out_features=3000, bias=True), loss_sim=0.1031, loss_pred=0.0121, error=42.240%, num_examples=10000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0927, loss_pred=0.0114, error=39.640%, num_examples=10000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0900, loss_pred=0.0114, error=39.160%, num_examples=10000
+
+Train epoch=32, lr=5.00e-04, loss_local=0.3153, loss_global=0.0112, error=39.252%, mem=874MiB, max_mem=956MiB
+Linear(in_features=3072, out_features=3000, bias=True), loss_sim=0.1002, loss_pred=0.0124, error=43.958%, num_examples=50000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0917, loss_pred=0.0111, error=39.122%, num_examples=50000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0889, loss_pred=0.0111, error=39.144%, num_examples=50000
+Test loss_global=0.0111, error=38.130%
+Linear(in_features=3072, out_features=3000, bias=True), loss_sim=0.1025, loss_pred=0.0119, error=41.310%, num_examples=10000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0909, loss_pred=0.0111, error=38.790%, num_examples=10000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0883, loss_pred=0.0111, error=38.430%, num_examples=10000
+
+Train epoch=33, lr=5.00e-04, loss_local=0.3144, loss_global=0.0111, error=39.522%, mem=874MiB, max_mem=956MiB
+Linear(in_features=3072, out_features=3000, bias=True), loss_sim=0.0999, loss_pred=0.0124, error=43.544%, num_examples=50000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0914, loss_pred=0.0110, error=39.086%, num_examples=50000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0886, loss_pred=0.0110, error=39.142%, num_examples=50000
+Test loss_global=0.0110, error=38.420%
+Linear(in_features=3072, out_features=3000, bias=True), loss_sim=0.1022, loss_pred=0.0118, error=41.000%, num_examples=10000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0909, loss_pred=0.0110, error=38.750%, num_examples=10000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0878, loss_pred=0.0110, error=38.490%, num_examples=10000
+
+Train epoch=34, lr=5.00e-04, loss_local=0.3139, loss_global=0.0110, error=39.298%, mem=874MiB, max_mem=956MiB
+Linear(in_features=3072, out_features=3000, bias=True), loss_sim=0.0999, loss_pred=0.0124, error=43.284%, num_examples=50000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0913, loss_pred=0.0110, error=38.914%, num_examples=50000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0885, loss_pred=0.0109, error=38.930%, num_examples=50000
+Test loss_global=0.0108, error=38.090%
+Linear(in_features=3072, out_features=3000, bias=True), loss_sim=0.1016, loss_pred=0.0118, error=41.380%, num_examples=10000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0906, loss_pred=0.0109, error=38.300%, num_examples=10000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0873, loss_pred=0.0108, error=38.300%, num_examples=10000
+
+Train epoch=35, lr=5.00e-04, loss_local=0.3128, loss_global=0.0109, error=38.378%, mem=874MiB, max_mem=956MiB
+Linear(in_features=3072, out_features=3000, bias=True), loss_sim=0.0999, loss_pred=0.0123, error=42.954%, num_examples=50000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0910, loss_pred=0.0108, error=38.294%, num_examples=50000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0880, loss_pred=0.0108, error=38.158%, num_examples=50000
+Test loss_global=0.0111, error=38.840%
+Linear(in_features=3072, out_features=3000, bias=True), loss_sim=0.1017, loss_pred=0.0119, error=41.220%, num_examples=10000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0906, loss_pred=0.0111, error=38.570%, num_examples=10000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0878, loss_pred=0.0111, error=38.780%, num_examples=10000
+
+Train epoch=36, lr=5.00e-04, loss_local=0.3115, loss_global=0.0108, error=38.288%, mem=874MiB, max_mem=956MiB
+Linear(in_features=3072, out_features=3000, bias=True), loss_sim=0.0997, loss_pred=0.0122, error=42.832%, num_examples=50000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0907, loss_pred=0.0108, error=38.064%, num_examples=50000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0875, loss_pred=0.0107, error=38.060%, num_examples=50000
+Test loss_global=0.0108, error=38.220%
+Linear(in_features=3072, out_features=3000, bias=True), loss_sim=0.1013, loss_pred=0.0117, error=40.400%, num_examples=10000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0896, loss_pred=0.0108, error=38.030%, num_examples=10000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0865, loss_pred=0.0108, error=38.340%, num_examples=10000
+
+Train epoch=37, lr=5.00e-04, loss_local=0.3115, loss_global=0.0108, error=38.266%, mem=874MiB, max_mem=956MiB
+Linear(in_features=3072, out_features=3000, bias=True), loss_sim=0.0997, loss_pred=0.0123, error=42.964%, num_examples=50000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0907, loss_pred=0.0108, error=37.926%, num_examples=50000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0874, loss_pred=0.0107, error=38.012%, num_examples=50000
+Test loss_global=0.0109, error=38.390%
+Linear(in_features=3072, out_features=3000, bias=True), loss_sim=0.1013, loss_pred=0.0117, error=40.550%, num_examples=10000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0893, loss_pred=0.0108, error=37.920%, num_examples=10000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0863, loss_pred=0.0109, error=38.500%, num_examples=10000
+
+Train epoch=38, lr=5.00e-04, loss_local=0.3094, loss_global=0.0107, error=37.704%, mem=874MiB, max_mem=956MiB
+Linear(in_features=3072, out_features=3000, bias=True), loss_sim=0.0992, loss_pred=0.0122, error=42.668%, num_examples=50000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0900, loss_pred=0.0107, error=37.514%, num_examples=50000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0867, loss_pred=0.0106, error=37.564%, num_examples=50000
+Test loss_global=0.0109, error=38.520%
+Linear(in_features=3072, out_features=3000, bias=True), loss_sim=0.1011, loss_pred=0.0117, error=40.800%, num_examples=10000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0894, loss_pred=0.0110, error=38.500%, num_examples=10000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0865, loss_pred=0.0109, error=38.490%, num_examples=10000
+
+Train epoch=39, lr=5.00e-04, loss_local=0.3087, loss_global=0.0106, error=37.312%, mem=874MiB, max_mem=956MiB
+Linear(in_features=3072, out_features=3000, bias=True), loss_sim=0.0992, loss_pred=0.0121, error=42.352%, num_examples=50000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0899, loss_pred=0.0106, error=37.544%, num_examples=50000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0865, loss_pred=0.0104, error=37.178%, num_examples=50000
+Test loss_global=0.0107, error=38.240%
+Linear(in_features=3072, out_features=3000, bias=True), loss_sim=0.1015, loss_pred=0.0116, error=40.750%, num_examples=10000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0891, loss_pred=0.0108, error=38.460%, num_examples=10000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0862, loss_pred=0.0107, error=38.170%, num_examples=10000
+
+Train epoch=40, lr=5.00e-04, loss_local=0.3069, loss_global=0.0106, error=37.500%, mem=874MiB, max_mem=956MiB
+Linear(in_features=3072, out_features=3000, bias=True), loss_sim=0.0988, loss_pred=0.0121, error=42.520%, num_examples=50000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0892, loss_pred=0.0106, error=37.196%, num_examples=50000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0858, loss_pred=0.0104, error=37.122%, num_examples=50000
+Test loss_global=0.0108, error=38.180%
+Linear(in_features=3072, out_features=3000, bias=True), loss_sim=0.1005, loss_pred=0.0117, error=40.690%, num_examples=10000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0888, loss_pred=0.0107, error=38.040%, num_examples=10000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0860, loss_pred=0.0108, error=38.540%, num_examples=10000
+
+Train epoch=41, lr=5.00e-04, loss_local=0.3063, loss_global=0.0104, error=36.772%, mem=874MiB, max_mem=956MiB
+Linear(in_features=3072, out_features=3000, bias=True), loss_sim=0.0988, loss_pred=0.0120, error=42.076%, num_examples=50000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0892, loss_pred=0.0104, error=36.720%, num_examples=50000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0855, loss_pred=0.0102, error=36.446%, num_examples=50000
+Test loss_global=0.0107, error=37.380%
+Linear(in_features=3072, out_features=3000, bias=True), loss_sim=0.1000, loss_pred=0.0117, error=40.650%, num_examples=10000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0887, loss_pred=0.0107, error=37.360%, num_examples=10000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0861, loss_pred=0.0107, error=37.500%, num_examples=10000
+
+Train epoch=42, lr=5.00e-04, loss_local=0.3052, loss_global=0.0103, error=36.540%, mem=874MiB, max_mem=956MiB
+Linear(in_features=3072, out_features=3000, bias=True), loss_sim=0.0987, loss_pred=0.0120, error=41.832%, num_examples=50000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0889, loss_pred=0.0104, error=36.548%, num_examples=50000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0851, loss_pred=0.0102, error=36.136%, num_examples=50000
+Test loss_global=0.0107, error=37.130%
+Linear(in_features=3072, out_features=3000, bias=True), loss_sim=0.1000, loss_pred=0.0115, error=39.760%, num_examples=10000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0883, loss_pred=0.0107, error=37.170%, num_examples=10000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0857, loss_pred=0.0107, error=37.390%, num_examples=10000
+
+Train epoch=43, lr=5.00e-04, loss_local=0.3049, loss_global=0.0103, error=36.630%, mem=874MiB, max_mem=956MiB
+Linear(in_features=3072, out_features=3000, bias=True), loss_sim=0.0987, loss_pred=0.0120, error=41.946%, num_examples=50000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0888, loss_pred=0.0103, error=36.542%, num_examples=50000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0850, loss_pred=0.0101, error=36.408%, num_examples=50000
+Test loss_global=0.0105, error=37.600%
+Linear(in_features=3072, out_features=3000, bias=True), loss_sim=0.0999, loss_pred=0.0116, error=40.200%, num_examples=10000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0878, loss_pred=0.0106, error=37.270%, num_examples=10000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0853, loss_pred=0.0106, error=37.500%, num_examples=10000
+
+Train epoch=44, lr=5.00e-04, loss_local=0.3035, loss_global=0.0102, error=36.140%, mem=874MiB, max_mem=956MiB
+Linear(in_features=3072, out_features=3000, bias=True), loss_sim=0.0984, loss_pred=0.0119, error=41.712%, num_examples=50000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0883, loss_pred=0.0102, error=36.234%, num_examples=50000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0845, loss_pred=0.0101, error=35.700%, num_examples=50000
+Test loss_global=0.0107, error=37.750%
+Linear(in_features=3072, out_features=3000, bias=True), loss_sim=0.0996, loss_pred=0.0117, error=40.970%, num_examples=10000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0878, loss_pred=0.0108, error=38.230%, num_examples=10000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0857, loss_pred=0.0108, error=37.890%, num_examples=10000
+
+Train epoch=45, lr=5.00e-04, loss_local=0.3028, loss_global=0.0102, error=35.786%, mem=874MiB, max_mem=956MiB
+Linear(in_features=3072, out_features=3000, bias=True), loss_sim=0.0982, loss_pred=0.0119, error=41.524%, num_examples=50000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0882, loss_pred=0.0102, error=35.930%, num_examples=50000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0842, loss_pred=0.0100, error=35.272%, num_examples=50000
+Test loss_global=0.0105, error=36.820%
+Linear(in_features=3072, out_features=3000, bias=True), loss_sim=0.0996, loss_pred=0.0115, error=39.780%, num_examples=10000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0873, loss_pred=0.0106, error=36.820%, num_examples=10000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0847, loss_pred=0.0105, error=37.080%, num_examples=10000
+
+Train epoch=46, lr=5.00e-04, loss_local=0.3025, loss_global=0.0101, error=35.522%, mem=874MiB, max_mem=956MiB
+Linear(in_features=3072, out_features=3000, bias=True), loss_sim=0.0984, loss_pred=0.0118, error=41.616%, num_examples=50000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0881, loss_pred=0.0102, error=35.916%, num_examples=50000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0841, loss_pred=0.0100, error=35.300%, num_examples=50000
+Test loss_global=0.0106, error=37.460%
+Linear(in_features=3072, out_features=3000, bias=True), loss_sim=0.0993, loss_pred=0.0115, error=40.060%, num_examples=10000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0879, loss_pred=0.0106, error=37.230%, num_examples=10000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0853, loss_pred=0.0106, error=37.470%, num_examples=10000
+
+Train epoch=47, lr=5.00e-04, loss_local=0.3009, loss_global=0.0099, error=35.170%, mem=874MiB, max_mem=956MiB
+Linear(in_features=3072, out_features=3000, bias=True), loss_sim=0.0981, loss_pred=0.0118, error=41.108%, num_examples=50000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0877, loss_pred=0.0101, error=35.576%, num_examples=50000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0835, loss_pred=0.0098, error=34.766%, num_examples=50000
+Test loss_global=0.0105, error=37.160%
+Linear(in_features=3072, out_features=3000, bias=True), loss_sim=0.1001, loss_pred=0.0115, error=40.210%, num_examples=10000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0876, loss_pred=0.0105, error=37.080%, num_examples=10000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0851, loss_pred=0.0106, error=37.380%, num_examples=10000
+
+Train epoch=48, lr=5.00e-04, loss_local=0.2999, loss_global=0.0099, error=35.188%, mem=874MiB, max_mem=956MiB
+Linear(in_features=3072, out_features=3000, bias=True), loss_sim=0.0979, loss_pred=0.0117, error=41.040%, num_examples=50000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0873, loss_pred=0.0100, error=35.422%, num_examples=50000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0831, loss_pred=0.0098, error=34.828%, num_examples=50000
+Test loss_global=0.0106, error=36.470%
+Linear(in_features=3072, out_features=3000, bias=True), loss_sim=0.0989, loss_pred=0.0114, error=39.680%, num_examples=10000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0874, loss_pred=0.0107, error=36.670%, num_examples=10000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0851, loss_pred=0.0106, error=36.620%, num_examples=10000
+
+Train epoch=49, lr=5.00e-04, loss_local=0.2995, loss_global=0.0099, error=35.030%, mem=874MiB, max_mem=956MiB
+Linear(in_features=3072, out_features=3000, bias=True), loss_sim=0.0979, loss_pred=0.0117, error=40.988%, num_examples=50000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0872, loss_pred=0.0100, error=35.370%, num_examples=50000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0829, loss_pred=0.0097, error=34.710%, num_examples=50000
+Test loss_global=0.0104, error=36.510%
+Linear(in_features=3072, out_features=3000, bias=True), loss_sim=0.0985, loss_pred=0.0113, error=39.170%, num_examples=10000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0864, loss_pred=0.0104, error=36.380%, num_examples=10000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0843, loss_pred=0.0105, error=36.530%, num_examples=10000
+
+Train epoch=50, lr=5.00e-04, loss_local=0.2982, loss_global=0.0098, error=34.766%, mem=874MiB, max_mem=956MiB
+Linear(in_features=3072, out_features=3000, bias=True), loss_sim=0.0977, loss_pred=0.0117, error=40.656%, num_examples=50000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0870, loss_pred=0.0099, error=34.970%, num_examples=50000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0825, loss_pred=0.0096, error=34.358%, num_examples=50000
+Test loss_global=0.0104, error=36.080%
+Linear(in_features=3072, out_features=3000, bias=True), loss_sim=0.0997, loss_pred=0.0114, error=39.580%, num_examples=10000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0870, loss_pred=0.0104, error=36.280%, num_examples=10000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0844, loss_pred=0.0104, error=36.130%, num_examples=10000
+
+Train epoch=51, lr=5.00e-04, loss_local=0.2974, loss_global=0.0097, error=34.602%, mem=874MiB, max_mem=956MiB
+Linear(in_features=3072, out_features=3000, bias=True), loss_sim=0.0975, loss_pred=0.0116, error=40.916%, num_examples=50000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0867, loss_pred=0.0098, error=34.844%, num_examples=50000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0821, loss_pred=0.0096, error=34.312%, num_examples=50000
+Test loss_global=0.0104, error=36.590%
+Linear(in_features=3072, out_features=3000, bias=True), loss_sim=0.0981, loss_pred=0.0113, error=38.730%, num_examples=10000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0863, loss_pred=0.0104, error=36.220%, num_examples=10000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0843, loss_pred=0.0105, error=36.850%, num_examples=10000
+
+Train epoch=52, lr=5.00e-04, loss_local=0.2957, loss_global=0.0096, error=33.706%, mem=874MiB, max_mem=956MiB
+Linear(in_features=3072, out_features=3000, bias=True), loss_sim=0.0973, loss_pred=0.0116, error=40.726%, num_examples=50000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0861, loss_pred=0.0098, error=34.298%, num_examples=50000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0814, loss_pred=0.0095, error=33.498%, num_examples=50000
+Test loss_global=0.0105, error=36.710%
+Linear(in_features=3072, out_features=3000, bias=True), loss_sim=0.0983, loss_pred=0.0115, error=39.480%, num_examples=10000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0867, loss_pred=0.0106, error=36.840%, num_examples=10000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0849, loss_pred=0.0106, error=36.690%, num_examples=10000
+
+Train epoch=53, lr=5.00e-04, loss_local=0.2958, loss_global=0.0096, error=33.858%, mem=874MiB, max_mem=956MiB
+Linear(in_features=3072, out_features=3000, bias=True), loss_sim=0.0973, loss_pred=0.0116, error=40.654%, num_examples=50000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0862, loss_pred=0.0097, error=34.340%, num_examples=50000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0814, loss_pred=0.0094, error=33.590%, num_examples=50000
+Test loss_global=0.0105, error=36.760%
+Linear(in_features=3072, out_features=3000, bias=True), loss_sim=0.0980, loss_pred=0.0113, error=39.460%, num_examples=10000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0863, loss_pred=0.0105, error=36.490%, num_examples=10000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0844, loss_pred=0.0105, error=37.010%, num_examples=10000
+
+Train epoch=54, lr=5.00e-04, loss_local=0.2945, loss_global=0.0095, error=33.420%, mem=874MiB, max_mem=956MiB
+Linear(in_features=3072, out_features=3000, bias=True), loss_sim=0.0972, loss_pred=0.0115, error=40.002%, num_examples=50000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0859, loss_pred=0.0097, error=34.152%, num_examples=50000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0809, loss_pred=0.0093, error=33.104%, num_examples=50000
+Test loss_global=0.0105, error=36.120%
+Linear(in_features=3072, out_features=3000, bias=True), loss_sim=0.0989, loss_pred=0.0113, error=39.030%, num_examples=10000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0867, loss_pred=0.0105, error=35.950%, num_examples=10000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0844, loss_pred=0.0105, error=36.240%, num_examples=10000
+
+Train epoch=55, lr=5.00e-04, loss_local=0.2943, loss_global=0.0094, error=33.208%, mem=874MiB, max_mem=956MiB
+Linear(in_features=3072, out_features=3000, bias=True), loss_sim=0.0973, loss_pred=0.0115, error=40.198%, num_examples=50000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0858, loss_pred=0.0096, error=33.728%, num_examples=50000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0808, loss_pred=0.0093, error=32.954%, num_examples=50000
+Test loss_global=0.0104, error=36.080%
+Linear(in_features=3072, out_features=3000, bias=True), loss_sim=0.0979, loss_pred=0.0113, error=39.150%, num_examples=10000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0860, loss_pred=0.0104, error=36.080%, num_examples=10000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0843, loss_pred=0.0104, error=36.070%, num_examples=10000
+
+Train epoch=56, lr=5.00e-04, loss_local=0.2938, loss_global=0.0094, error=33.110%, mem=874MiB, max_mem=956MiB
+Linear(in_features=3072, out_features=3000, bias=True), loss_sim=0.0973, loss_pred=0.0115, error=40.096%, num_examples=50000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0857, loss_pred=0.0096, error=33.782%, num_examples=50000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0805, loss_pred=0.0092, error=32.866%, num_examples=50000
+Test loss_global=0.0104, error=35.730%
+Linear(in_features=3072, out_features=3000, bias=True), loss_sim=0.0987, loss_pred=0.0114, error=39.640%, num_examples=10000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0864, loss_pred=0.0104, error=36.090%, num_examples=10000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0844, loss_pred=0.0104, error=35.710%, num_examples=10000
+
+Train epoch=57, lr=5.00e-04, loss_local=0.2934, loss_global=0.0094, error=33.176%, mem=874MiB, max_mem=956MiB
+Linear(in_features=3072, out_features=3000, bias=True), loss_sim=0.0970, loss_pred=0.0115, error=40.214%, num_examples=50000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0856, loss_pred=0.0096, error=33.604%, num_examples=50000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0804, loss_pred=0.0092, error=32.832%, num_examples=50000
+Test loss_global=0.0102, error=35.530%
+Linear(in_features=3072, out_features=3000, bias=True), loss_sim=0.0976, loss_pred=0.0113, error=38.620%, num_examples=10000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0856, loss_pred=0.0103, error=35.650%, num_examples=10000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0836, loss_pred=0.0103, error=35.760%, num_examples=10000
+
+Train epoch=58, lr=5.00e-04, loss_local=0.2921, loss_global=0.0092, error=32.540%, mem=874MiB, max_mem=956MiB
+Linear(in_features=3072, out_features=3000, bias=True), loss_sim=0.0970, loss_pred=0.0115, error=40.000%, num_examples=50000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0852, loss_pred=0.0095, error=33.346%, num_examples=50000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0798, loss_pred=0.0091, error=32.300%, num_examples=50000
+Test loss_global=0.0104, error=36.230%
+Linear(in_features=3072, out_features=3000, bias=True), loss_sim=0.0980, loss_pred=0.0114, error=39.420%, num_examples=10000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0859, loss_pred=0.0103, error=36.140%, num_examples=10000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0842, loss_pred=0.0104, error=36.230%, num_examples=10000
+
+Train epoch=59, lr=5.00e-04, loss_local=0.2909, loss_global=0.0092, error=32.632%, mem=874MiB, max_mem=956MiB
+Linear(in_features=3072, out_features=3000, bias=True), loss_sim=0.0967, loss_pred=0.0114, error=40.076%, num_examples=50000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0849, loss_pred=0.0094, error=33.074%, num_examples=50000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0795, loss_pred=0.0090, error=32.262%, num_examples=50000
+Test loss_global=0.0104, error=35.880%
+Linear(in_features=3072, out_features=3000, bias=True), loss_sim=0.0989, loss_pred=0.0113, error=39.400%, num_examples=10000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0857, loss_pred=0.0103, error=35.820%, num_examples=10000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0839, loss_pred=0.0104, error=35.910%, num_examples=10000
+
+Train epoch=60, lr=5.00e-04, loss_local=0.2906, loss_global=0.0091, error=32.194%, mem=874MiB, max_mem=956MiB
+Linear(in_features=3072, out_features=3000, bias=True), loss_sim=0.0968, loss_pred=0.0114, error=40.006%, num_examples=50000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0848, loss_pred=0.0094, error=33.136%, num_examples=50000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0792, loss_pred=0.0090, error=31.920%, num_examples=50000
+Test loss_global=0.0104, error=35.590%
+Linear(in_features=3072, out_features=3000, bias=True), loss_sim=0.0977, loss_pred=0.0112, error=38.290%, num_examples=10000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0855, loss_pred=0.0102, error=35.780%, num_examples=10000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0835, loss_pred=0.0104, error=35.770%, num_examples=10000
+
+Train epoch=61, lr=5.00e-04, loss_local=0.2902, loss_global=0.0091, error=32.150%, mem=874MiB, max_mem=956MiB
+Linear(in_features=3072, out_features=3000, bias=True), loss_sim=0.0967, loss_pred=0.0113, error=39.524%, num_examples=50000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0847, loss_pred=0.0093, error=32.720%, num_examples=50000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0792, loss_pred=0.0090, error=31.848%, num_examples=50000
+Test loss_global=0.0103, error=34.950%
+Linear(in_features=3072, out_features=3000, bias=True), loss_sim=0.0974, loss_pred=0.0112, error=39.170%, num_examples=10000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0853, loss_pred=0.0103, error=35.030%, num_examples=10000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0835, loss_pred=0.0103, error=34.950%, num_examples=10000
+
+Train epoch=62, lr=5.00e-04, loss_local=0.2901, loss_global=0.0090, error=31.596%, mem=874MiB, max_mem=956MiB
+Linear(in_features=3072, out_features=3000, bias=True), loss_sim=0.0969, loss_pred=0.0114, error=39.900%, num_examples=50000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0847, loss_pred=0.0093, error=32.716%, num_examples=50000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0789, loss_pred=0.0089, error=31.346%, num_examples=50000
+Test loss_global=0.0102, error=35.030%
+Linear(in_features=3072, out_features=3000, bias=True), loss_sim=0.0970, loss_pred=0.0111, error=38.540%, num_examples=10000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0850, loss_pred=0.0102, error=35.810%, num_examples=10000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0831, loss_pred=0.0103, error=35.240%, num_examples=10000
+
+Train epoch=63, lr=5.00e-04, loss_local=0.2873, loss_global=0.0089, error=31.516%, mem=874MiB, max_mem=956MiB
+Linear(in_features=3072, out_features=3000, bias=True), loss_sim=0.0962, loss_pred=0.0113, error=39.416%, num_examples=50000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0838, loss_pred=0.0092, error=32.326%, num_examples=50000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0780, loss_pred=0.0088, error=31.240%, num_examples=50000
+Test loss_global=0.0103, error=35.010%
+Linear(in_features=3072, out_features=3000, bias=True), loss_sim=0.0970, loss_pred=0.0111, error=38.580%, num_examples=10000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0847, loss_pred=0.0103, error=35.410%, num_examples=10000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0829, loss_pred=0.0103, error=34.940%, num_examples=10000
+
+Train epoch=64, lr=5.00e-04, loss_local=0.2877, loss_global=0.0089, error=31.370%, mem=874MiB, max_mem=956MiB
+Linear(in_features=3072, out_features=3000, bias=True), loss_sim=0.0964, loss_pred=0.0113, error=39.408%, num_examples=50000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0839, loss_pred=0.0092, error=32.284%, num_examples=50000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0782, loss_pred=0.0088, error=31.138%, num_examples=50000
+Test loss_global=0.0103, error=35.250%
+Linear(in_features=3072, out_features=3000, bias=True), loss_sim=0.0973, loss_pred=0.0112, error=38.870%, num_examples=10000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0851, loss_pred=0.0103, error=35.730%, num_examples=10000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0836, loss_pred=0.0104, error=35.230%, num_examples=10000
+
+Train epoch=65, lr=5.00e-04, loss_local=0.2860, loss_global=0.0088, error=31.012%, mem=874MiB, max_mem=956MiB
+Linear(in_features=3072, out_features=3000, bias=True), loss_sim=0.0960, loss_pred=0.0112, error=39.256%, num_examples=50000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0835, loss_pred=0.0091, error=32.186%, num_examples=50000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0775, loss_pred=0.0087, error=30.738%, num_examples=50000
+Test loss_global=0.0105, error=35.700%
+Linear(in_features=3072, out_features=3000, bias=True), loss_sim=0.0972, loss_pred=0.0113, error=39.630%, num_examples=10000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0857, loss_pred=0.0103, error=35.490%, num_examples=10000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0842, loss_pred=0.0106, error=35.760%, num_examples=10000
+
+Train epoch=66, lr=5.00e-04, loss_local=0.2856, loss_global=0.0087, error=30.786%, mem=874MiB, max_mem=956MiB
+Linear(in_features=3072, out_features=3000, bias=True), loss_sim=0.0962, loss_pred=0.0112, error=39.288%, num_examples=50000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0833, loss_pred=0.0090, error=31.918%, num_examples=50000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0772, loss_pred=0.0086, error=30.408%, num_examples=50000
+Test loss_global=0.0103, error=34.840%
+Linear(in_features=3072, out_features=3000, bias=True), loss_sim=0.0969, loss_pred=0.0111, error=38.080%, num_examples=10000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0852, loss_pred=0.0103, error=35.360%, num_examples=10000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0835, loss_pred=0.0104, error=35.330%, num_examples=10000
+
+Train epoch=67, lr=5.00e-04, loss_local=0.2849, loss_global=0.0087, error=30.442%, mem=874MiB, max_mem=956MiB
+Linear(in_features=3072, out_features=3000, bias=True), loss_sim=0.0960, loss_pred=0.0112, error=39.100%, num_examples=50000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0832, loss_pred=0.0090, error=31.616%, num_examples=50000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0769, loss_pred=0.0085, error=30.156%, num_examples=50000
+Test loss_global=0.0102, error=34.800%
+Linear(in_features=3072, out_features=3000, bias=True), loss_sim=0.0968, loss_pred=0.0110, error=38.110%, num_examples=10000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0843, loss_pred=0.0101, error=34.920%, num_examples=10000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0829, loss_pred=0.0103, error=34.740%, num_examples=10000
+
+Train epoch=68, lr=5.00e-04, loss_local=0.2841, loss_global=0.0086, error=30.188%, mem=874MiB, max_mem=956MiB
+Linear(in_features=3072, out_features=3000, bias=True), loss_sim=0.0959, loss_pred=0.0112, error=38.780%, num_examples=50000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0829, loss_pred=0.0090, error=31.602%, num_examples=50000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0766, loss_pred=0.0085, error=29.780%, num_examples=50000
+Test loss_global=0.0102, error=35.030%
+Linear(in_features=3072, out_features=3000, bias=True), loss_sim=0.0966, loss_pred=0.0110, error=38.370%, num_examples=10000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0844, loss_pred=0.0102, error=34.880%, num_examples=10000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0829, loss_pred=0.0102, error=34.970%, num_examples=10000
+
+Train epoch=69, lr=5.00e-04, loss_local=0.2838, loss_global=0.0086, error=30.156%, mem=874MiB, max_mem=956MiB
+Linear(in_features=3072, out_features=3000, bias=True), loss_sim=0.0960, loss_pred=0.0112, error=38.930%, num_examples=50000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0828, loss_pred=0.0089, error=31.216%, num_examples=50000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0764, loss_pred=0.0084, error=29.942%, num_examples=50000
+Test loss_global=0.0103, error=35.120%
+Linear(in_features=3072, out_features=3000, bias=True), loss_sim=0.0965, loss_pred=0.0110, error=38.400%, num_examples=10000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0843, loss_pred=0.0103, error=35.690%, num_examples=10000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0831, loss_pred=0.0103, error=35.090%, num_examples=10000
+
+Train epoch=70, lr=5.00e-04, loss_local=0.2824, loss_global=0.0085, error=29.812%, mem=874MiB, max_mem=956MiB
+Linear(in_features=3072, out_features=3000, bias=True), loss_sim=0.0957, loss_pred=0.0111, error=38.630%, num_examples=50000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0825, loss_pred=0.0089, error=31.082%, num_examples=50000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0758, loss_pred=0.0084, error=29.486%, num_examples=50000
+Test loss_global=0.0103, error=35.540%
+Linear(in_features=3072, out_features=3000, bias=True), loss_sim=0.0964, loss_pred=0.0110, error=38.210%, num_examples=10000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0844, loss_pred=0.0101, error=35.060%, num_examples=10000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0828, loss_pred=0.0103, error=35.830%, num_examples=10000
+
+Train epoch=71, lr=5.00e-04, loss_local=0.2820, loss_global=0.0085, error=29.728%, mem=874MiB, max_mem=956MiB
+Linear(in_features=3072, out_features=3000, bias=True), loss_sim=0.0957, loss_pred=0.0111, error=38.808%, num_examples=50000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0823, loss_pred=0.0089, error=30.910%, num_examples=50000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0757, loss_pred=0.0083, error=29.240%, num_examples=50000
+Test loss_global=0.0103, error=35.080%
+Linear(in_features=3072, out_features=3000, bias=True), loss_sim=0.0961, loss_pred=0.0110, error=37.970%, num_examples=10000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0843, loss_pred=0.0102, error=34.730%, num_examples=10000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0833, loss_pred=0.0104, error=35.120%, num_examples=10000
+
+Train epoch=72, lr=5.00e-04, loss_local=0.2818, loss_global=0.0084, error=29.358%, mem=874MiB, max_mem=956MiB
+Linear(in_features=3072, out_features=3000, bias=True), loss_sim=0.0958, loss_pred=0.0111, error=38.526%, num_examples=50000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0823, loss_pred=0.0088, error=30.872%, num_examples=50000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0756, loss_pred=0.0083, error=29.090%, num_examples=50000
+Test loss_global=0.0103, error=35.220%
+Linear(in_features=3072, out_features=3000, bias=True), loss_sim=0.0959, loss_pred=0.0111, error=38.440%, num_examples=10000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0843, loss_pred=0.0101, error=35.480%, num_examples=10000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0829, loss_pred=0.0104, error=35.430%, num_examples=10000
+
+Train epoch=73, lr=5.00e-04, loss_local=0.2807, loss_global=0.0084, error=29.204%, mem=874MiB, max_mem=956MiB
+Linear(in_features=3072, out_features=3000, bias=True), loss_sim=0.0955, loss_pred=0.0111, error=38.598%, num_examples=50000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0820, loss_pred=0.0088, error=30.520%, num_examples=50000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0752, loss_pred=0.0082, error=28.836%, num_examples=50000
+Test loss_global=0.0102, error=34.720%
+Linear(in_features=3072, out_features=3000, bias=True), loss_sim=0.0957, loss_pred=0.0110, error=37.910%, num_examples=10000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0838, loss_pred=0.0101, error=34.940%, num_examples=10000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0829, loss_pred=0.0103, error=34.750%, num_examples=10000
+
+Train epoch=74, lr=5.00e-04, loss_local=0.2804, loss_global=0.0083, error=29.072%, mem=874MiB, max_mem=956MiB
+Linear(in_features=3072, out_features=3000, bias=True), loss_sim=0.0955, loss_pred=0.0111, error=38.864%, num_examples=50000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0819, loss_pred=0.0088, error=30.560%, num_examples=50000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0750, loss_pred=0.0082, error=28.882%, num_examples=50000
+Test loss_global=0.0102, error=34.260%
+Linear(in_features=3072, out_features=3000, bias=True), loss_sim=0.0958, loss_pred=0.0110, error=37.990%, num_examples=10000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0840, loss_pred=0.0101, error=34.510%, num_examples=10000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0827, loss_pred=0.0103, error=34.360%, num_examples=10000
+
+Train epoch=75, lr=5.00e-04, loss_local=0.2791, loss_global=0.0083, error=29.162%, mem=874MiB, max_mem=956MiB
+Linear(in_features=3072, out_features=3000, bias=True), loss_sim=0.0952, loss_pred=0.0110, error=38.172%, num_examples=50000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0816, loss_pred=0.0087, error=30.508%, num_examples=50000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0744, loss_pred=0.0081, error=28.610%, num_examples=50000
+Test loss_global=0.0103, error=35.360%
+Linear(in_features=3072, out_features=3000, bias=True), loss_sim=0.0959, loss_pred=0.0111, error=37.770%, num_examples=10000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0841, loss_pred=0.0102, error=35.440%, num_examples=10000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0835, loss_pred=0.0103, error=35.590%, num_examples=10000
+
+Train epoch=76, lr=5.00e-04, loss_local=0.2793, loss_global=0.0082, error=28.712%, mem=874MiB, max_mem=956MiB
+Linear(in_features=3072, out_features=3000, bias=True), loss_sim=0.0955, loss_pred=0.0110, error=38.372%, num_examples=50000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0816, loss_pred=0.0087, error=30.350%, num_examples=50000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0745, loss_pred=0.0081, error=28.502%, num_examples=50000
+Test loss_global=0.0102, error=34.980%
+Linear(in_features=3072, out_features=3000, bias=True), loss_sim=0.0955, loss_pred=0.0109, error=37.290%, num_examples=10000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0838, loss_pred=0.0101, error=35.130%, num_examples=10000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0831, loss_pred=0.0102, error=34.840%, num_examples=10000
+
+Train epoch=77, lr=5.00e-04, loss_local=0.2780, loss_global=0.0082, error=28.644%, mem=874MiB, max_mem=956MiB
+Linear(in_features=3072, out_features=3000, bias=True), loss_sim=0.0951, loss_pred=0.0110, error=38.312%, num_examples=50000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0813, loss_pred=0.0087, error=30.316%, num_examples=50000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0740, loss_pred=0.0080, error=28.318%, num_examples=50000
+Test loss_global=0.0102, error=34.710%
+Linear(in_features=3072, out_features=3000, bias=True), loss_sim=0.0960, loss_pred=0.0110, error=37.840%, num_examples=10000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0843, loss_pred=0.0102, error=34.500%, num_examples=10000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0830, loss_pred=0.0102, error=34.900%, num_examples=10000
+
+Train epoch=78, lr=5.00e-04, loss_local=0.2777, loss_global=0.0081, error=28.246%, mem=874MiB, max_mem=956MiB
+Linear(in_features=3072, out_features=3000, bias=True), loss_sim=0.0953, loss_pred=0.0110, error=38.090%, num_examples=50000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0811, loss_pred=0.0085, error=29.712%, num_examples=50000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0738, loss_pred=0.0079, error=28.000%, num_examples=50000
+Test loss_global=0.0103, error=34.730%
+Linear(in_features=3072, out_features=3000, bias=True), loss_sim=0.0958, loss_pred=0.0109, error=37.510%, num_examples=10000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0840, loss_pred=0.0102, error=35.400%, num_examples=10000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0835, loss_pred=0.0103, error=34.740%, num_examples=10000
+
+Train epoch=79, lr=5.00e-04, loss_local=0.2760, loss_global=0.0080, error=28.410%, mem=874MiB, max_mem=956MiB
+Linear(in_features=3072, out_features=3000, bias=True), loss_sim=0.0948, loss_pred=0.0109, error=38.280%, num_examples=50000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0806, loss_pred=0.0085, error=29.832%, num_examples=50000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0733, loss_pred=0.0079, error=27.984%, num_examples=50000
+Test loss_global=0.0106, error=35.010%
+Linear(in_features=3072, out_features=3000, bias=True), loss_sim=0.0956, loss_pred=0.0110, error=37.790%, num_examples=10000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0845, loss_pred=0.0103, error=35.110%, num_examples=10000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0843, loss_pred=0.0106, error=35.070%, num_examples=10000
+
+Train epoch=80, lr=5.00e-04, loss_local=0.2761, loss_global=0.0080, error=28.098%, mem=874MiB, max_mem=956MiB
+Linear(in_features=3072, out_features=3000, bias=True), loss_sim=0.0950, loss_pred=0.0109, error=38.058%, num_examples=50000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0808, loss_pred=0.0085, error=29.786%, num_examples=50000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0732, loss_pred=0.0078, error=27.666%, num_examples=50000
+Test loss_global=0.0105, error=34.930%
+Linear(in_features=3072, out_features=3000, bias=True), loss_sim=0.0960, loss_pred=0.0110, error=37.400%, num_examples=10000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0843, loss_pred=0.0103, error=35.000%, num_examples=10000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0836, loss_pred=0.0106, error=34.890%, num_examples=10000
+
+Train epoch=81, lr=5.00e-04, loss_local=0.2759, loss_global=0.0080, error=27.780%, mem=874MiB, max_mem=956MiB
+Linear(in_features=3072, out_features=3000, bias=True), loss_sim=0.0949, loss_pred=0.0110, error=38.116%, num_examples=50000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0807, loss_pred=0.0085, error=29.492%, num_examples=50000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0730, loss_pred=0.0078, error=27.524%, num_examples=50000
+Test loss_global=0.0103, error=34.600%
+Linear(in_features=3072, out_features=3000, bias=True), loss_sim=0.0954, loss_pred=0.0109, error=37.630%, num_examples=10000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0837, loss_pred=0.0102, error=35.090%, num_examples=10000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0831, loss_pred=0.0103, error=34.700%, num_examples=10000
+
+Train epoch=82, lr=5.00e-04, loss_local=0.2752, loss_global=0.0079, error=27.728%, mem=874MiB, max_mem=956MiB
+Linear(in_features=3072, out_features=3000, bias=True), loss_sim=0.0951, loss_pred=0.0109, error=37.946%, num_examples=50000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0804, loss_pred=0.0084, error=29.404%, num_examples=50000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0727, loss_pred=0.0078, error=27.408%, num_examples=50000
+Test loss_global=0.0102, error=34.160%
+Linear(in_features=3072, out_features=3000, bias=True), loss_sim=0.0960, loss_pred=0.0110, error=38.140%, num_examples=10000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0834, loss_pred=0.0101, error=34.960%, num_examples=10000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0829, loss_pred=0.0103, error=34.330%, num_examples=10000
+
+Train epoch=83, lr=5.00e-04, loss_local=0.2734, loss_global=0.0078, error=27.204%, mem=874MiB, max_mem=956MiB
+Linear(in_features=3072, out_features=3000, bias=True), loss_sim=0.0947, loss_pred=0.0108, error=37.642%, num_examples=50000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0799, loss_pred=0.0083, error=29.116%, num_examples=50000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0720, loss_pred=0.0077, error=26.732%, num_examples=50000
+Test loss_global=0.0103, error=34.910%
+Linear(in_features=3072, out_features=3000, bias=True), loss_sim=0.0951, loss_pred=0.0109, error=37.910%, num_examples=10000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0839, loss_pred=0.0102, error=35.000%, num_examples=10000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0836, loss_pred=0.0104, error=34.880%, num_examples=10000
+
+Train epoch=84, lr=5.00e-04, loss_local=0.2738, loss_global=0.0078, error=27.380%, mem=874MiB, max_mem=956MiB
+Linear(in_features=3072, out_features=3000, bias=True), loss_sim=0.0949, loss_pred=0.0109, error=37.944%, num_examples=50000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0801, loss_pred=0.0083, error=29.066%, num_examples=50000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0721, loss_pred=0.0076, error=26.940%, num_examples=50000
+Test loss_global=0.0104, error=34.890%
+Linear(in_features=3072, out_features=3000, bias=True), loss_sim=0.0954, loss_pred=0.0110, error=37.620%, num_examples=10000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0838, loss_pred=0.0102, error=34.710%, num_examples=10000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0832, loss_pred=0.0105, error=35.030%, num_examples=10000
+
+Train epoch=85, lr=5.00e-04, loss_local=0.2723, loss_global=0.0077, error=27.040%, mem=874MiB, max_mem=956MiB
+Linear(in_features=3072, out_features=3000, bias=True), loss_sim=0.0945, loss_pred=0.0108, error=37.668%, num_examples=50000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0796, loss_pred=0.0082, error=28.946%, num_examples=50000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0716, loss_pred=0.0076, error=26.790%, num_examples=50000
+Test loss_global=0.0103, error=34.250%
+Linear(in_features=3072, out_features=3000, bias=True), loss_sim=0.0954, loss_pred=0.0109, error=37.530%, num_examples=10000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0836, loss_pred=0.0102, error=34.610%, num_examples=10000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0828, loss_pred=0.0103, error=34.350%, num_examples=10000
+
+Train epoch=86, lr=5.00e-04, loss_local=0.2728, loss_global=0.0077, error=26.860%, mem=874MiB, max_mem=956MiB
+Linear(in_features=3072, out_features=3000, bias=True), loss_sim=0.0948, loss_pred=0.0108, error=37.870%, num_examples=50000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0798, loss_pred=0.0083, error=28.632%, num_examples=50000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0715, loss_pred=0.0076, error=26.474%, num_examples=50000
+Test loss_global=0.0104, error=33.910%
+Linear(in_features=3072, out_features=3000, bias=True), loss_sim=0.0948, loss_pred=0.0109, error=37.700%, num_examples=10000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0833, loss_pred=0.0102, error=34.410%, num_examples=10000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0837, loss_pred=0.0105, error=33.990%, num_examples=10000
+
+Train epoch=87, lr=5.00e-04, loss_local=0.2727, loss_global=0.0077, error=26.858%, mem=874MiB, max_mem=956MiB
+Linear(in_features=3072, out_features=3000, bias=True), loss_sim=0.0948, loss_pred=0.0108, error=37.412%, num_examples=50000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0798, loss_pred=0.0082, error=28.774%, num_examples=50000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0717, loss_pred=0.0075, error=26.378%, num_examples=50000
+Test loss_global=0.0104, error=33.910%
+Linear(in_features=3072, out_features=3000, bias=True), loss_sim=0.0951, loss_pred=0.0110, error=37.400%, num_examples=10000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0836, loss_pred=0.0102, error=34.380%, num_examples=10000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0835, loss_pred=0.0104, error=33.950%, num_examples=10000
+
+Train epoch=88, lr=5.00e-04, loss_local=0.2710, loss_global=0.0076, error=26.452%, mem=874MiB, max_mem=956MiB
+Linear(in_features=3072, out_features=3000, bias=True), loss_sim=0.0946, loss_pred=0.0108, error=37.290%, num_examples=50000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0791, loss_pred=0.0082, error=28.380%, num_examples=50000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0709, loss_pred=0.0075, error=25.950%, num_examples=50000
+Test loss_global=0.0105, error=34.320%
+Linear(in_features=3072, out_features=3000, bias=True), loss_sim=0.0947, loss_pred=0.0109, error=37.080%, num_examples=10000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0838, loss_pred=0.0102, error=34.610%, num_examples=10000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0838, loss_pred=0.0106, error=34.590%, num_examples=10000
+
+Train epoch=89, lr=5.00e-04, loss_local=0.2702, loss_global=0.0076, error=26.338%, mem=874MiB, max_mem=956MiB
+Linear(in_features=3072, out_features=3000, bias=True), loss_sim=0.0944, loss_pred=0.0108, error=37.566%, num_examples=50000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0790, loss_pred=0.0081, error=28.002%, num_examples=50000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0705, loss_pred=0.0074, error=25.854%, num_examples=50000
+Test loss_global=0.0105, error=34.300%
+Linear(in_features=3072, out_features=3000, bias=True), loss_sim=0.0948, loss_pred=0.0109, error=37.580%, num_examples=10000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0835, loss_pred=0.0102, error=34.300%, num_examples=10000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0837, loss_pred=0.0106, error=34.320%, num_examples=10000
+
+Train epoch=90, lr=5.00e-04, loss_local=0.2706, loss_global=0.0075, error=26.432%, mem=874MiB, max_mem=956MiB
+Linear(in_features=3072, out_features=3000, bias=True), loss_sim=0.0946, loss_pred=0.0107, error=37.242%, num_examples=50000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0792, loss_pred=0.0081, error=28.378%, num_examples=50000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0706, loss_pred=0.0074, error=26.038%, num_examples=50000
+Test loss_global=0.0103, error=34.280%
+Linear(in_features=3072, out_features=3000, bias=True), loss_sim=0.0946, loss_pred=0.0107, error=37.390%, num_examples=10000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0832, loss_pred=0.0101, error=34.470%, num_examples=10000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0827, loss_pred=0.0104, error=34.230%, num_examples=10000
+
+Train epoch=91, lr=5.00e-04, loss_local=0.2684, loss_global=0.0074, error=25.746%, mem=874MiB, max_mem=956MiB
+Linear(in_features=3072, out_features=3000, bias=True), loss_sim=0.0941, loss_pred=0.0107, error=37.106%, num_examples=50000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0785, loss_pred=0.0080, error=27.996%, num_examples=50000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0698, loss_pred=0.0073, error=25.402%, num_examples=50000
+Test loss_global=0.0103, error=33.930%
+Linear(in_features=3072, out_features=3000, bias=True), loss_sim=0.0949, loss_pred=0.0108, error=37.220%, num_examples=10000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0833, loss_pred=0.0101, error=34.370%, num_examples=10000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0831, loss_pred=0.0104, error=34.020%, num_examples=10000
+
+Train epoch=92, lr=5.00e-04, loss_local=0.2683, loss_global=0.0074, error=25.740%, mem=874MiB, max_mem=956MiB
+Linear(in_features=3072, out_features=3000, bias=True), loss_sim=0.0942, loss_pred=0.0107, error=37.124%, num_examples=50000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0784, loss_pred=0.0080, error=27.640%, num_examples=50000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0698, loss_pred=0.0072, error=25.252%, num_examples=50000
+Test loss_global=0.0104, error=34.330%
+Linear(in_features=3072, out_features=3000, bias=True), loss_sim=0.0947, loss_pred=0.0108, error=37.350%, num_examples=10000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0834, loss_pred=0.0101, error=34.170%, num_examples=10000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0828, loss_pred=0.0105, error=34.480%, num_examples=10000
+
+Train epoch=93, lr=5.00e-04, loss_local=0.2680, loss_global=0.0074, error=25.678%, mem=874MiB, max_mem=956MiB
+Linear(in_features=3072, out_features=3000, bias=True), loss_sim=0.0941, loss_pred=0.0107, error=37.126%, num_examples=50000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0784, loss_pred=0.0080, error=27.808%, num_examples=50000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0696, loss_pred=0.0072, error=25.340%, num_examples=50000
+Test loss_global=0.0105, error=34.150%
+Linear(in_features=3072, out_features=3000, bias=True), loss_sim=0.0945, loss_pred=0.0109, error=37.460%, num_examples=10000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0837, loss_pred=0.0102, error=34.400%, num_examples=10000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0839, loss_pred=0.0105, error=34.240%, num_examples=10000
+
+Train epoch=94, lr=5.00e-04, loss_local=0.2669, loss_global=0.0073, error=25.614%, mem=874MiB, max_mem=956MiB
+Linear(in_features=3072, out_features=3000, bias=True), loss_sim=0.0939, loss_pred=0.0106, error=37.016%, num_examples=50000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0780, loss_pred=0.0079, error=27.444%, num_examples=50000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0692, loss_pred=0.0072, error=25.288%, num_examples=50000
+Test loss_global=0.0105, error=34.130%
+Linear(in_features=3072, out_features=3000, bias=True), loss_sim=0.0947, loss_pred=0.0109, error=37.300%, num_examples=10000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0833, loss_pred=0.0101, error=34.180%, num_examples=10000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0837, loss_pred=0.0105, error=34.340%, num_examples=10000
+
+Train epoch=95, lr=5.00e-04, loss_local=0.2666, loss_global=0.0073, error=25.406%, mem=874MiB, max_mem=956MiB
+Linear(in_features=3072, out_features=3000, bias=True), loss_sim=0.0939, loss_pred=0.0106, error=37.048%, num_examples=50000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0781, loss_pred=0.0080, error=27.570%, num_examples=50000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0690, loss_pred=0.0071, error=24.958%, num_examples=50000
+Test loss_global=0.0106, error=34.580%
+Linear(in_features=3072, out_features=3000, bias=True), loss_sim=0.0946, loss_pred=0.0109, error=37.550%, num_examples=10000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0841, loss_pred=0.0103, error=34.500%, num_examples=10000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0844, loss_pred=0.0107, error=34.620%, num_examples=10000
+
+Train epoch=96, lr=5.00e-04, loss_local=0.2658, loss_global=0.0072, error=25.306%, mem=874MiB, max_mem=956MiB
+Linear(in_features=3072, out_features=3000, bias=True), loss_sim=0.0938, loss_pred=0.0106, error=36.934%, num_examples=50000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0777, loss_pred=0.0079, error=27.538%, num_examples=50000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0687, loss_pred=0.0071, error=24.906%, num_examples=50000
+Test loss_global=0.0105, error=33.890%
+Linear(in_features=3072, out_features=3000, bias=True), loss_sim=0.0943, loss_pred=0.0108, error=36.920%, num_examples=10000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0830, loss_pred=0.0102, error=33.990%, num_examples=10000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0832, loss_pred=0.0106, error=33.970%, num_examples=10000
+
+Train epoch=97, lr=5.00e-04, loss_local=0.2659, loss_global=0.0072, error=25.034%, mem=874MiB, max_mem=956MiB
+Linear(in_features=3072, out_features=3000, bias=True), loss_sim=0.0941, loss_pred=0.0106, error=36.786%, num_examples=50000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0778, loss_pred=0.0078, error=27.180%, num_examples=50000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0685, loss_pred=0.0070, error=24.618%, num_examples=50000
+Test loss_global=0.0107, error=34.200%
+Linear(in_features=3072, out_features=3000, bias=True), loss_sim=0.0942, loss_pred=0.0108, error=37.000%, num_examples=10000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0834, loss_pred=0.0102, error=34.050%, num_examples=10000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0837, loss_pred=0.0107, error=34.180%, num_examples=10000
+
+Train epoch=98, lr=5.00e-04, loss_local=0.2653, loss_global=0.0072, error=24.918%, mem=874MiB, max_mem=956MiB
+Linear(in_features=3072, out_features=3000, bias=True), loss_sim=0.0938, loss_pred=0.0106, error=37.008%, num_examples=50000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0777, loss_pred=0.0078, error=26.954%, num_examples=50000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0684, loss_pred=0.0070, error=24.474%, num_examples=50000
+Test loss_global=0.0106, error=34.180%
+Linear(in_features=3072, out_features=3000, bias=True), loss_sim=0.0938, loss_pred=0.0108, error=37.200%, num_examples=10000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0829, loss_pred=0.0101, error=34.620%, num_examples=10000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0836, loss_pred=0.0106, error=34.230%, num_examples=10000
+
+Train epoch=99, lr=5.00e-04, loss_local=0.2639, loss_global=0.0071, error=24.538%, mem=874MiB, max_mem=956MiB
+Linear(in_features=3072, out_features=3000, bias=True), loss_sim=0.0937, loss_pred=0.0106, error=36.898%, num_examples=50000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0772, loss_pred=0.0077, error=26.712%, num_examples=50000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0677, loss_pred=0.0069, error=24.134%, num_examples=50000
+Test loss_global=0.0105, error=33.860%
+Linear(in_features=3072, out_features=3000, bias=True), loss_sim=0.0939, loss_pred=0.0108, error=36.960%, num_examples=10000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0828, loss_pred=0.0101, error=33.740%, num_examples=10000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0832, loss_pred=0.0105, error=33.890%, num_examples=10000
+
+Train epoch=100, lr=5.00e-04, loss_local=0.2641, loss_global=0.0071, error=24.472%, mem=874MiB, max_mem=956MiB
+Linear(in_features=3072, out_features=3000, bias=True), loss_sim=0.0938, loss_pred=0.0106, error=36.764%, num_examples=50000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0773, loss_pred=0.0077, error=26.770%, num_examples=50000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0678, loss_pred=0.0069, error=24.096%, num_examples=50000
+Test loss_global=0.0105, error=33.980%
+Linear(in_features=3072, out_features=3000, bias=True), loss_sim=0.0938, loss_pred=0.0108, error=36.850%, num_examples=10000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0828, loss_pred=0.0102, error=33.850%, num_examples=10000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0833, loss_pred=0.0106, error=34.100%, num_examples=10000
+
+Train epoch=101, lr=5.00e-04, loss_local=0.2642, loss_global=0.0070, error=24.628%, mem=874MiB, max_mem=956MiB
+Linear(in_features=3072, out_features=3000, bias=True), loss_sim=0.0940, loss_pred=0.0105, error=36.582%, num_examples=50000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0774, loss_pred=0.0077, error=26.682%, num_examples=50000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0677, loss_pred=0.0069, error=24.098%, num_examples=50000
+Test loss_global=0.0106, error=33.780%
+Linear(in_features=3072, out_features=3000, bias=True), loss_sim=0.0940, loss_pred=0.0108, error=37.400%, num_examples=10000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0832, loss_pred=0.0102, error=33.970%, num_examples=10000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0833, loss_pred=0.0107, error=33.680%, num_examples=10000
+
+Train epoch=102, lr=5.00e-04, loss_local=0.2636, loss_global=0.0070, error=24.398%, mem=874MiB, max_mem=956MiB
+Linear(in_features=3072, out_features=3000, bias=True), loss_sim=0.0939, loss_pred=0.0106, error=36.540%, num_examples=50000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0771, loss_pred=0.0077, error=26.612%, num_examples=50000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0675, loss_pred=0.0068, error=24.046%, num_examples=50000
+Test loss_global=0.0104, error=33.410%
+Linear(in_features=3072, out_features=3000, bias=True), loss_sim=0.0940, loss_pred=0.0107, error=37.150%, num_examples=10000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0828, loss_pred=0.0101, error=34.090%, num_examples=10000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0830, loss_pred=0.0105, error=33.510%, num_examples=10000
+
+Train epoch=103, lr=5.00e-04, loss_local=0.2622, loss_global=0.0069, error=24.244%, mem=874MiB, max_mem=956MiB
+Linear(in_features=3072, out_features=3000, bias=True), loss_sim=0.0936, loss_pred=0.0105, error=36.610%, num_examples=50000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0768, loss_pred=0.0076, error=26.388%, num_examples=50000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0670, loss_pred=0.0068, error=23.662%, num_examples=50000
+Test loss_global=0.0105, error=33.870%
+Linear(in_features=3072, out_features=3000, bias=True), loss_sim=0.0938, loss_pred=0.0107, error=37.500%, num_examples=10000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0828, loss_pred=0.0101, error=34.090%, num_examples=10000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0836, loss_pred=0.0105, error=34.050%, num_examples=10000
+
+Train epoch=104, lr=5.00e-04, loss_local=0.2615, loss_global=0.0069, error=23.814%, mem=874MiB, max_mem=956MiB
+Linear(in_features=3072, out_features=3000, bias=True), loss_sim=0.0935, loss_pred=0.0105, error=36.506%, num_examples=50000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0766, loss_pred=0.0076, error=26.074%, num_examples=50000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0666, loss_pred=0.0068, error=23.434%, num_examples=50000
+Test loss_global=0.0104, error=33.660%
+Linear(in_features=3072, out_features=3000, bias=True), loss_sim=0.0938, loss_pred=0.0107, error=36.940%, num_examples=10000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0825, loss_pred=0.0100, error=33.570%, num_examples=10000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0830, loss_pred=0.0105, error=33.670%, num_examples=10000
+
+Train epoch=105, lr=5.00e-04, loss_local=0.2611, loss_global=0.0069, error=23.846%, mem=874MiB, max_mem=956MiB
+Linear(in_features=3072, out_features=3000, bias=True), loss_sim=0.0933, loss_pred=0.0105, error=36.400%, num_examples=50000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0764, loss_pred=0.0076, error=26.158%, num_examples=50000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0666, loss_pred=0.0068, error=23.632%, num_examples=50000
+Test loss_global=0.0103, error=33.230%
+Linear(in_features=3072, out_features=3000, bias=True), loss_sim=0.0936, loss_pred=0.0107, error=36.910%, num_examples=10000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0823, loss_pred=0.0100, error=33.430%, num_examples=10000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0829, loss_pred=0.0103, error=33.410%, num_examples=10000
+
+Train epoch=106, lr=5.00e-04, loss_local=0.2608, loss_global=0.0068, error=23.624%, mem=874MiB, max_mem=956MiB
+Linear(in_features=3072, out_features=3000, bias=True), loss_sim=0.0934, loss_pred=0.0105, error=36.680%, num_examples=50000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0764, loss_pred=0.0075, error=26.136%, num_examples=50000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0663, loss_pred=0.0067, error=23.320%, num_examples=50000
+Test loss_global=0.0106, error=34.260%
+Linear(in_features=3072, out_features=3000, bias=True), loss_sim=0.0938, loss_pred=0.0107, error=36.770%, num_examples=10000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0828, loss_pred=0.0102, error=34.490%, num_examples=10000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0840, loss_pred=0.0107, error=34.400%, num_examples=10000
+
+Train epoch=107, lr=5.00e-04, loss_local=0.2605, loss_global=0.0068, error=23.762%, mem=874MiB, max_mem=956MiB
+Linear(in_features=3072, out_features=3000, bias=True), loss_sim=0.0933, loss_pred=0.0104, error=36.366%, num_examples=50000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0762, loss_pred=0.0075, error=26.068%, num_examples=50000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0663, loss_pred=0.0067, error=23.354%, num_examples=50000
+Test loss_global=0.0106, error=34.110%
+Linear(in_features=3072, out_features=3000, bias=True), loss_sim=0.0937, loss_pred=0.0107, error=36.750%, num_examples=10000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0829, loss_pred=0.0102, error=34.010%, num_examples=10000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0839, loss_pred=0.0106, error=34.260%, num_examples=10000
+
+Train epoch=108, lr=5.00e-04, loss_local=0.2602, loss_global=0.0068, error=23.610%, mem=874MiB, max_mem=956MiB
+Linear(in_features=3072, out_features=3000, bias=True), loss_sim=0.0933, loss_pred=0.0105, error=36.458%, num_examples=50000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0762, loss_pred=0.0075, error=26.188%, num_examples=50000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0661, loss_pred=0.0066, error=23.098%, num_examples=50000
+Test loss_global=0.0109, error=33.370%
+Linear(in_features=3072, out_features=3000, bias=True), loss_sim=0.0938, loss_pred=0.0107, error=36.700%, num_examples=10000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0828, loss_pred=0.0102, error=33.570%, num_examples=10000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0842, loss_pred=0.0110, error=33.440%, num_examples=10000
+
+Train epoch=109, lr=5.00e-04, loss_local=0.2601, loss_global=0.0067, error=23.444%, mem=874MiB, max_mem=956MiB
+Linear(in_features=3072, out_features=3000, bias=True), loss_sim=0.0935, loss_pred=0.0104, error=36.270%, num_examples=50000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0762, loss_pred=0.0075, error=25.902%, num_examples=50000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0659, loss_pred=0.0066, error=23.114%, num_examples=50000
+Test loss_global=0.0106, error=33.720%
+Linear(in_features=3072, out_features=3000, bias=True), loss_sim=0.0935, loss_pred=0.0107, error=36.480%, num_examples=10000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0827, loss_pred=0.0101, error=33.850%, num_examples=10000
+Linear(in_features=3000, out_features=3000, bias=True), loss_sim=0.0836, loss_pred=0.0106, error=33.690%, num_examples=10000
+
