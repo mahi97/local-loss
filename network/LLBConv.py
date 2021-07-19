@@ -29,20 +29,20 @@ class LocalLossBlockConv(nn.Module):
     def __init__(self, ch_in, ch_out, kernel_size, stride, padding, num_classes, dim_out, first_layer=False,
                  dropout=None, bias=None, pre_act=False, post_act=True, args=None):
         super(LocalLossBlockConv, self).__init__()
-        self.args = self.args
+        self.args = args
         self.ch_in = ch_in
         self.ch_out = ch_out
         self.num_classes = num_classes
         self.first_layer = first_layer
-        self.dropout_p = self.self.args.dropout if dropout is None else dropout
+        self.dropout_p = self.args.dropout if dropout is None else dropout
         self.bias = True if bias is None else bias
         self.pre_act = pre_act
         self.post_act = post_act
         self.encoder = nn.Conv2d(ch_in, ch_out, kernel_size, stride=stride, padding=padding, bias=self.bias)
 
-        if not self.self.args.backprop and self.self.args.loss_unsup == 'recon':
+        if not self.args.backprop and self.args.loss_unsup == 'recon':
             self.decoder_x = nn.ConvTranspose2d(ch_out, ch_in, kernel_size, stride=stride, padding=padding)
-        if self.self.args.bio or (not self.args.backprop and (self.args.loss_sup == 'pred' or self.args.loss_sup == 'predsim')):
+        if self.args.bio or (not self.args.backprop and (self.args.loss_sup == 'pred' or self.args.loss_sup == 'predsim')):
             # Resolve average-pooling kernel size in order for flattened dim to match self.args.dim_in_decoder
             ks_h, ks_w = 1, 1
             dim_out_h, dim_out_w = dim_out, dim_out
