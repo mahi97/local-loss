@@ -2,8 +2,9 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
-from network.LLBLiner import LocalLossBlockLinear
-
+from network.LLBMahi import LocalLossBlockMahi
+from network.mixer.qmix import QMixer
+from network.mixer.vdn import VDNMixer
 
 class MAHI(nn.Module):
     '''
@@ -25,16 +26,17 @@ class MAHI(nn.Module):
         self.num_layers = num_layers
         reduce_factor = 1
         self.layers = nn.ModuleList(
-            [LocalLossBlockLinear(input_dim * input_dim * input_ch, num_hidden, num_classes, first_layer=True,
-                                  args=args)])
-        self.layers.extend([LocalLossBlockLinear(int(num_hidden // (reduce_factor ** (i - 1))),
-                                                 int(num_hidden // (reduce_factor ** i)), num_classes, args=args)
+            [LocalLossBlockMahi(input_dim * input_dim * input_ch, num_hidden, num_classes, first_layer=True,
+                                args=args)])
+        self.layers.extend([LocalLossBlockMahi(int(num_hidden // (reduce_factor ** (i - 1))),
+                                               int(num_hidden // (reduce_factor ** i)), num_classes, args=args)
                             for i in range(1, num_layers)])
         self.layer_out = nn.Linear(int(num_hidden // (reduce_factor ** (num_layers - 1))), num_classes)
+        self.mixer = VDNMixer()
         if not self.args.backprop:
             self.layer_out.weight.data.zero_()
 
-    def parameters(self):
+    def parameters(self, **kwargs):
         if not self.args.backprop:
             return self.layer_out.parameters()
         else:
@@ -54,10 +56,13 @@ class MAHI(nn.Module):
 
     def forward(self, x, y, y_onehot):
         x = x.view(x.size(0), -1)
-        total_loss = 0.0
+        losses = []
         for i, layer in enumerate(self.layers):
             x, loss = layer(x, y, y_onehot)
-            total_loss += loss
+            losses.append(loss)
         x = self.layer_out(x)
-
-        return x, total_loss
+        mix_loss = self.mixer(losses)
+        true_loss = F.cross_entropy(x, y)
+        loss = nn.MSELoss(mix_loss, true_loss)
+        # total_loss = sum(losses)
+        return x, loss, losses
