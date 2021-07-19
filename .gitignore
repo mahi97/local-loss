@@ -2,3 +2,5 @@ __pycache__/**
 results/**/*.tar
 **/__pycache__/**
 wandb/**
+.idea/**
+results/**
