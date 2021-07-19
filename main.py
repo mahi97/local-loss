@@ -9,14 +9,15 @@ from arg import get_args
 from datasets import get_dataset, NClassRandomSampler
 
 from network import *
-from train import train, test
+from learner.solo_learner import SoloLearner
+from learner.mix_learner import MixLearner
 
 from tqdm import tqdm
 import wandb
 
 
 def count_parameters(model):
-    ''' Count number of parameters in model influenced by global loss. '''
+    """ Count number of parameters in model influenced by global loss. """
     return sum(p.numel() for p in model.parameters() if p.requires_grad)
 
 
@@ -33,6 +34,7 @@ if __name__ == '__main__':
         torch.cuda.manual_seed(args.seed)
 
     checkpoint = None
+    args_backup = None
     if not args.resume == '':
         if os.path.isfile(args.resume):
             checkpoint = torch.load(args.resume)
@@ -53,7 +55,6 @@ if __name__ == '__main__':
     input_dim, input_ch, num_classes, train_loader, test_loader, dataset_train, kwargs = get_dataset(args)
 
     model = get_model(args, input_dim, input_ch, num_classes)
-
     # Check if to load model
     if checkpoint is not None:
         model.load_state_dict(checkpoint['state_dict'])
@@ -63,10 +64,12 @@ if __name__ == '__main__':
         model.cuda()
     wandb.watch(model)
 
+    optimizer = None
     if args.optim == 'sgd':
         optimizer = optim.SGD(model.parameters(), lr=args.lr, weight_decay=args.weight_decay, momentum=args.momentum)
     elif args.optim == 'adam' or args.optim == 'amsgrad':
-        optimizer = optim.Adam(model.parameters(), lr=args.lr, weight_decay=args.weight_decay, amsgrad=args.optim == 'amsgrad')
+        optimizer = optim.Adam(model.parameters(), lr=args.lr, weight_decay=args.weight_decay,
+                               amsgrad=args.optim == 'amsgrad')
     else:
         print('Unknown optimizer')
 
@@ -76,6 +79,10 @@ if __name__ == '__main__':
 
     ''' The main training and testing loop '''
     start_epoch = 1 if checkpoint is None else 1 + checkpoint['epoch']
+    # Train and test
+    learner = SoloLearner(optimizer, args, num_classes, train_loader, test_loader)
+    # learner = MixLearner(args, num_classes, train_loader, test_loader)
+
     for epoch in range(start_epoch, args.epochs + 1):
         # Decide learning rate
         lr = args.lr * args.lr_decay_fact ** bisect_right(args.lr_decay_milestones, (epoch - 1))
@@ -93,15 +100,14 @@ if __name__ == '__main__':
         model.set_learning_rate(lr)
 
         # Check if to remove NClassRandomSampler from train_loader
-        if args.classes_per_batch_until_epoch > 0 and epoch > args.classes_per_batch_until_epoch and isinstance(
+        if 0 < args.classes_per_batch_until_epoch < epoch and isinstance(
                 train_loader.sampler, NClassRandomSampler):
             print('Remove NClassRandomSampler from train_loader')
             train_loader = torch.utils.data.DataLoader(dataset_train, sampler=None, batch_size=args.batch_size,
                                                        shuffle=True, **kwargs)
 
-        # Train and test
-        train_loss, train_error, train_print = train(epoch, lr, model, args, train_loader, num_classes, optimizer)
-        test_loss, test_error, test_print = test(epoch, model, args, test_loader, num_classes)
+        train_loss, train_error, train_print = learner.train(epoch, lr, model)
+        test_loss, test_error, test_print = learner.test(epoch, model)
 
         # Check if to save checkpoint
         if args.save_dir is not '':
