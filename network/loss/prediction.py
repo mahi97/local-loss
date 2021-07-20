@@ -9,11 +9,11 @@ class LossPred(nn.Module):
     def __init__(self, num_classes, num_out, args, avg_pool=None):
         super(LossPred, self).__init__()
         self.args = args
-        self.proj_y = nn.Linear(num_classes, args.target_proj_size, bias=False)
         self.avg_pool = avg_pool
         self.decoder_y = nn.Linear(num_out, num_classes)
         if args.bio:
             self.decoder_y = LinearFA(num_out, args.target_proj_size)
+            self.proj_y = nn.Linear(num_classes, args.target_proj_size, bias=False)
         self.decoder_y.weight.data.zero_()
 
     def forward(self, x, y, y_onehot):
