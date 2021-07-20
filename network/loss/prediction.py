@@ -12,9 +12,9 @@ class LossPred(nn.Module):
         self.proj_y = nn.Linear(num_classes, args.target_proj_size, bias=False)
         self.avg_pool = avg_pool
         self.decoder_y = nn.Linear(num_out, num_classes)
-        self.decoder_y.weight.data.zero_()
         if args.bio:
             self.decoder_y = LinearFA(num_out, args.target_proj_size)
+        self.decoder_y.weight.data.zero_()
 
     def forward(self, x, y, y_onehot):
         if self.avg_pool:
