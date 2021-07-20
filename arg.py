@@ -20,7 +20,7 @@ def get_args():
                         help='apply cutout regularization')
     parser.add_argument('--dataset', default='CIFAR10',
                         help='dataset, MNIST, KuzushijiMNIST, FashionMNIST, CIFAR10, CIFAR100, SVHN, STL10 or ImageNet (default: CIFAR10)')
-    parser.add_argument('--dim-in-decoder', type=int, default=4096,
+    parser.add_argument('--dim-in-decoder', type=int, default=2048,
                         help='input dimension of decoder_y used in pred and predsim loss (default: 4096)')
     parser.add_argument('--dropout', type=float, default=0.0,
                         help='dropout after each nonlinearity (default: 0.0)')
@@ -40,7 +40,7 @@ def get_args():
                         help='decay learning rate at these milestone epochs (default: [200,300,350,375])')
     parser.add_argument('--lr-decay-fact', type=float, default=0.25,
                         help='learning rate decay factor to use at milestone epochs (default: 0.25)')
-    parser.add_argument('--model', default='mlp',
+    parser.add_argument('--model', default='vgg8b',
                         help='model, mlp, vgg13, vgg16, vgg19, vgg8b, vgg11b, resnet18, resnet34, wresnet28-10 and more (default: vgg8b)')
     parser.add_argument('--momentum', type=float, default=0.0,
                         help='SGD momentum (default: 0.0)')
@@ -60,7 +60,7 @@ def get_args():
                         help='nonlinearity, relu or leakyrelu (default: relu)')
     parser.add_argument('--num-hidden', type=int, default=1024,
                         help='number of hidden units for mpl model (default: 1024)')
-    parser.add_argument('--num-layers', type=int, default=1,
+    parser.add_argument('--num-layers', type=int, default=3,
                         help='number of hidden fully-connected layers for mlp and vgg models (default: 1')
     parser.add_argument('--optim', default='adam',
                         help='optimizer, adam, amsgrad or sgd (default: adam)')

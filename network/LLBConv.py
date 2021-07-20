@@ -159,11 +159,11 @@ class LocalLossBlockConv(nn.Module):
 
             # Calculate hidden feature similarity matrix
             # loss_recon = self.recon(h)
-            loss_sim_u, loss_sim_s = self.sim(h, y_onehot)
-            # loss_pred = self.pred(x, y, y_onehot)
+            # loss_sim_u, loss_sim_s = self.sim(h, y_onehot)
+            loss_pred = self.pred(x, y, y_onehot)
             # loss_mahi = 0.0
 
-            loss = loss_sim_s #sum(map(lambda _x: _x[0] * _x[1], zip(self.args.abcde, [loss_recon, loss_sim_u, loss_sim_s, loss_pred])))
+            loss = loss_pred #sum(map(lambda _x: _x[0] * _x[1], zip(self.args.abcde, [loss_recon, loss_sim_u, loss_sim_s, loss_pred])))
 
             # Single-step back-propagation
             if self.training:
