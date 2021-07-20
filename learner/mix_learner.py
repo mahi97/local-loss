@@ -71,7 +71,7 @@ class MixLearner:
             self.optimizer.step()
 
             # If special option for no detaching is set, update weights also in hidden layers
-            if self.args.no_detach:
+            if self.args.no_detach and batch_idx % 100 == 0:
                 model.optim_step()
 
             pred = output.max(1)[1]  # get the index of the max log-probability
@@ -91,7 +91,7 @@ class MixLearner:
         error_percent = 100 - 100.0 * float(correct) / len(self.train_loader.dataset)
         wandb.log({"Train Loss Local": loss_average_local,
                    "Train Loss Global": loss_average_global,
-                   "Trian Error": error_percent})
+                   "Train Error": error_percent})
         string_print = 'Train epoch={}, ' \
                        'lr={:.2e}, ' \
                        'loss_local={:.4f}, ' \
