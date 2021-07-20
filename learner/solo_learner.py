@@ -95,7 +95,7 @@ class SoloLearner:
         error_percent = 100 - 100.0 * float(correct) / len(self.train_loader.dataset)
         wandb.log({"Train Loss Local": loss_average_local,
                    "Train Loss Global": loss_average_global,
-                   "Trian Error": error_percent})
+                   "Train Error": error_percent})
         string_print = 'Train epoch={}, ' \
                        'lr={:.2e}, ' \
                        'loss_local={:.4f}, ' \
@@ -150,7 +150,7 @@ class SoloLearner:
             loss_average *= (1 - self.args.beta)
         error_percent = 100 - 100.0 * float(correct) / len(self.test_loader.dataset)
         string_print = 'Test loss_global={:.4f}, error={:.3f}%\n'.format(loss_average, error_percent)
-        wandb.log({"Test Loss Global": loss_average, "Error": error_percent})
+        wandb.log({"Test Loss Global": loss_average, "Test Error": error_percent})
         if not self.args.no_print_stats:
             for m in model.modules():
                 if isinstance(m, LocalLossBlockLinear) or isinstance(m, LocalLossBlockConv):
