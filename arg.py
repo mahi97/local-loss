@@ -20,8 +20,6 @@ def get_args():
                         help='apply cutout regularization')
     parser.add_argument('--dataset', default='CIFAR10',
                         help='dataset, MNIST, KuzushijiMNIST, FashionMNIST, CIFAR10, CIFAR100, SVHN, STL10 or ImageNet (default: CIFAR10)')
-    parser.add_argument('--dim-in-decoder', type=int, default=2048,
-                        help='input dimension of decoder_y used in pred and predsim loss (default: 4096)')
     parser.add_argument('--dropout', type=float, default=0.0,
                         help='dropout after each nonlinearity (default: 0.0)')
     parser.add_argument('--epochs', type=int, default=400,
@@ -40,7 +38,7 @@ def get_args():
                         help='decay learning rate at these milestone epochs (default: [200,300,350,375])')
     parser.add_argument('--lr-decay-fact', type=float, default=0.25,
                         help='learning rate decay factor to use at milestone epochs (default: 0.25)')
-    parser.add_argument('--model', default='vgg8b',
+    parser.add_argument('--model', default='mahi',
                         help='model, mlp, vgg13, vgg16, vgg19, vgg8b, vgg11b, resnet18, resnet34, wresnet28-10 and more (default: vgg8b)')
     parser.add_argument('--momentum', type=float, default=0.0,
                         help='SGD momentum (default: 0.0)')
@@ -50,7 +48,7 @@ def get_args():
                         help='disable batch norm before non-linearities')
     parser.add_argument('--no-cuda', action='store_true', default=False,
                         help='disable CUDA training')
-    parser.add_argument('--no-detach', action='store_true', default=False,
+    parser.add_argument('--no-detach', action='store_true', default=True,
                         help='do not detach computational graph')
     parser.add_argument('--no-print-stats', action='store_true', default=False,
                         help='do not print layerwise statistics during training with local loss')
