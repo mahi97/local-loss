@@ -89,6 +89,9 @@ class MixLearner:
         loss_average_local = loss_total_local / len(self.train_loader.dataset)
         loss_average_global = loss_total_global / len(self.train_loader.dataset)
         error_percent = 100 - 100.0 * float(correct) / len(self.train_loader.dataset)
+        wandb.log({"Train Loss Local": loss_average_local,
+                   "Train Loss Global": loss_average_global,
+                   "Trian Error": error_percent})
         string_print = 'Train epoch={}, ' \
                        'lr={:.2e}, ' \
                        'loss_local={:.4f}, ' \
@@ -133,7 +136,7 @@ class MixLearner:
                 target_onehot = target_onehot.cuda()
 
             with torch.no_grad():
-                output, _ = model(data, target, target_onehot)
+                output, _, _ = model(data, target, target_onehot)
                 test_loss += F.cross_entropy(output, target).item() * data.size(0)
             pred = output.max(1)[1]  # get the index of the max log-probability
             correct += pred.eq(target_).cpu().sum()
@@ -144,7 +147,7 @@ class MixLearner:
             loss_average *= (1 - self.args.beta)
         error_percent = 100 - 100.0 * float(correct) / len(self.test_loader.dataset)
         string_print = 'Test loss_global={:.4f}, error={:.3f}%\n'.format(loss_average, error_percent)
-        wandb.log({"Test Loss Global": loss_average, "Error": error_percent})
+        wandb.log({"Test Loss Global": loss_average, "Test Error": error_percent})
         if not self.args.no_print_stats:
             for m in model.modules():
                 if isinstance(m, LocalLossBlockLinear) or isinstance(m, LocalLossBlockConv):

@@ -93,6 +93,9 @@ class SoloLearner:
         loss_average_local = loss_total_local / len(self.train_loader.dataset)
         loss_average_global = loss_total_global / len(self.train_loader.dataset)
         error_percent = 100 - 100.0 * float(correct) / len(self.train_loader.dataset)
+        wandb.log({"Train Loss Local": loss_average_local,
+                   "Train Loss Global": loss_average_global,
+                   "Trian Error": error_percent})
         string_print = 'Train epoch={}, ' \
                        'lr={:.2e}, ' \
                        'loss_local={:.4f}, ' \
