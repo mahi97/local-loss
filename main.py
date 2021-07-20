@@ -1,19 +1,16 @@
-import torch
-import torch.nn.functional as F
-import torch.optim as optim
-from torch.backends import cudnn
-from bisect import bisect_right
 import os
+from bisect import bisect_right
+
+import torch
+import torch.optim as optim
+import wandb
+from torch.backends import cudnn
 
 from arg import get_args
 from datasets import get_dataset, NClassRandomSampler
-
-from network import *
 from learner.solo_learner import SoloLearner
 from learner.mix_learner import MixLearner
-
-from tqdm import tqdm
-import wandb
+from network import *
 
 
 def count_parameters(model):
@@ -52,9 +49,9 @@ if __name__ == '__main__':
         else:
             print('Checkpoint not found: {}'.format(args.resume))
 
-    input_dim, input_ch, num_classes, train_loader, test_loader, dataset_train, kwargs = get_dataset(args)
+    input_dim, input_ch, num_classes, dim_in_decoder, train_loader, test_loader, dataset_train, kwargs = get_dataset(args)
 
-    model = get_model(args, input_dim, input_ch, num_classes)
+    model = get_model(args, input_dim, input_ch, num_classes, dim_in_decoder)
     # Check if to load model
     if checkpoint is not None:
         model.load_state_dict(checkpoint['state_dict'])
@@ -80,8 +77,10 @@ if __name__ == '__main__':
     ''' The main training and testing loop '''
     start_epoch = 1 if checkpoint is None else 1 + checkpoint['epoch']
     # Train and test
-    learner = SoloLearner(optimizer, args, num_classes, train_loader, test_loader)
-    # learner = MixLearner(args, num_classes, train_loader, test_loader)
+    if args.model == 'mahi':
+        learner = MixLearner(optimizer, args, num_classes, train_loader, test_loader)
+    else:
+        learner = SoloLearner(optimizer, args, num_classes, train_loader, test_loader)
 
     for epoch in range(start_epoch, args.epochs + 1):
         # Decide learning rate
@@ -110,7 +109,7 @@ if __name__ == '__main__':
         test_loss, test_error, test_print = learner.test(epoch, model)
 
         # Check if to save checkpoint
-        if args.save_dir is not '':
+        if args.save_dir != '':
             # Resolve log folder and checkpoint file name
             filename = 'chkp_ep{}_lr{:.2e}_trainloss{:.2f}_testloss{:.2f}_trainerr{:.2f}_testerr{:.2f}.tar'.format(
                 epoch, lr, train_loss, test_loss, train_error, test_error)
@@ -120,7 +119,7 @@ if __name__ == '__main__':
                                    '{}_{}x{}_{}_{}_dimdec{}_alpha{}_beta{}_bs{}_cpb{}_drop{}{}_bn{}_{}_wd{}_bp{}_detach{}_lr{:.2e}'.format(
                                        args.nonlin, args.num_layers, args.num_hidden,
                                        args.loss_sup + '-bio' if args.bio else args.loss_sup, args.loss_unsup,
-                                       args.dim_in_decoder, args.alpha,
+                                       dim_in_decoder, args.abcde[2],
                                        args.beta, args.batch_size, args.classes_per_batch, args.dropout,
                                        '_cutout{}x{}'.format(args.n_holes, args.length) if args.cutout else '',
                                        int(not args.no_batch_norm), args.optim, args.weight_decay, int(args.backprop),

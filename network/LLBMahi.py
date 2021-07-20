@@ -1,10 +1,8 @@
 import torch
 import torch.nn as nn
-import torch.nn.functional as F
 import torch.optim as optim
 
-from network.loss import LossSim, LossRecon, LossPred
-from network.linear import LinearFA
+from network.loss import LossMix
 
 
 class LocalLossBlockMahi(nn.Module):
@@ -24,13 +22,14 @@ class LocalLossBlockMahi(nn.Module):
         super(LocalLossBlockMahi, self).__init__()
         self.args = args
         self.num_classes = num_classes
-        self.sim = LossSim(num_classes, num_out, args)
-        self.pred = LossPred(num_classes, num_out, args)
-        self.recon = LossRecon(num_in, num_out, args, first_layer)
-
+        self.mix = LossMix(num_out, args)
         self.dropout_p = args.dropout if dropout_p is None else dropout_p
         self.batchnorm = not args.no_batch_norm if batchnorm is None else batchnorm
         self.encoder = nn.Linear(num_in, num_out, bias=True)
+        if args.nonlin == 'relu':
+            self.nonlin = nn.ReLU(inplace=True)
+        elif args.nonlin == 'leakyrelu':
+            self.nonlin = nn.LeakyReLU(negative_slope=0.01, inplace=True)
 
         if self.batchnorm:
             self.bn = torch.nn.BatchNorm1d(num_out)
@@ -56,16 +55,17 @@ class LocalLossBlockMahi(nn.Module):
             self.examples = 0
 
     def print_stats(self):
-        if not self.args.backprop:
-            stats = '{}, loss_sim={:.4f}, loss_pred={:.4f}, error={:.3f}%, num_examples={}\n'.format(
-                self.encoder,
-                self.loss_sim / self.examples,
-                self.loss_pred / self.examples,
-                100.0 * float(self.examples - self.correct) / self.examples,
-                self.examples)
-            return stats
-        else:
-            return ''
+        return ''
+        # if not self.args.backprop:
+        #     stats = '{}, loss_sim={:.4f}, loss_pred={:.4f}, error={:.3f}%, num_examples={}\n'.format(
+        #         self.encoder,
+        #         self.loss_sim / self.examples,
+        #         self.loss_pred / self.examples,
+        #         100.0 * float(self.examples - self.correct) / self.examples,
+        #         self.examples)
+        #     return stats
+        # else:
+        #     return ''
 
     def set_learning_rate(self, lr):
         self.lr = lr
@@ -78,10 +78,7 @@ class LocalLossBlockMahi(nn.Module):
     def optim_step(self):
         self.optimizer.step()
 
-    def _mahi_loss(self, h):
-        return h
-
-    def forward(self, x, y, y_onehot):
+    def forward(self, x):
         # The linear transformation
         h = self.encoder(x)
 
@@ -96,20 +93,14 @@ class LocalLossBlockMahi(nn.Module):
         # Calculate local loss and update weights
         if (self.training or not self.args.no_print_stats) and not self.args.backprop:
 
-            loss_recon = self.recon(x)
-            loss_sim_u, loss_sim_s = self.sim(x, y_onehot)
-            loss_pred = self.pred(x, y, y_onehot)
-            loss_mahi = 0.0
-            # Combine unsupervised and supervised loss
-            loss = sum(map(lambda _x: _x[0] * _x[1], zip(self.args.abcde, [loss_recon, loss_sim_u, loss_sim_s, loss_pred, loss_mahi])))
+            loss = self.mix(h)
 
             # Single-step back-propagation
             if self.training:
                 loss.backward(retain_graph=self.args.no_detach)
-
+                self.optimizer.step()
             # Update weights in this layer and detach computational graph
             if self.training and not self.args.no_detach:
-                self.optimizer.step()
                 self.optimizer.zero_grad()
                 h_return.detach_()
 

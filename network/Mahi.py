@@ -27,8 +27,7 @@ class MAHI(nn.Module):
         self.num_layers = num_layers
         reduce_factor = 1
         self.layers = nn.ModuleList(
-            [LocalLossBlockMahi(input_dim * input_dim * input_ch, num_hidden, num_classes, first_layer=True,
-                                args=args)])
+            [LocalLossBlockMahi(input_dim * input_dim * input_ch, num_hidden, num_classes, first_layer=True, args=args)])
         self.layers.extend([LocalLossBlockMahi(int(num_hidden // (reduce_factor ** (i - 1))),
                                                int(num_hidden // (reduce_factor ** i)), num_classes, args=args)
                             for i in range(1, num_layers)])
@@ -59,11 +58,12 @@ class MAHI(nn.Module):
         x = x.view(x.size(0), -1)
         losses = []
         for i, layer in enumerate(self.layers):
-            x, loss = layer(x, y, y_onehot)
+            x, loss = layer(x)
             losses.append(loss)
         x = self.layer_out(x)
+        losses = torch.FloatTensor(losses).cuda()
         mix_loss = self.mixer(losses)
         true_loss = F.cross_entropy(x, y)
-        loss = nn.MSELoss(mix_loss, true_loss)
+        loss = F.mse_loss(mix_loss, true_loss)
         # total_loss = sum(losses)
         return x, loss, losses

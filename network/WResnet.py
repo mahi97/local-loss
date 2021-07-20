@@ -6,18 +6,18 @@ import torch.optim as optim
 from network.LLBConv import LocalLossBlockConv
 
 
-class wide_basic(nn.Module):
-    ''' Used in WideResNet() '''
+class WideBasic(nn.Module):
+    """ Used in WideResNet() """
 
-    def __init__(self, in_planes, planes, dropout_rate, stride, num_classes, input_dim, adapted, args):
-        super(wide_basic, self).__init__()
+    def __init__(self, in_planes, planes, dropout_rate, stride, num_classes, input_dim, dim_in_decoder, adapted, args):
+        super(WideBasic, self).__init__()
         self.adapted = adapted
         self.args = args
-        self.conv1 = LocalLossBlockConv(in_planes, planes, 3, 1, 1, num_classes, input_dim * stride,
+        self.conv1 = LocalLossBlockConv(in_planes, planes, 3, 1, 1, num_classes, input_dim * stride, dim_in_decoder,
                                         dropout=None if self.adapted else 0, bias=True, pre_act=True, post_act=False, args=self.args)
         if not self.adapted:
             self.dropout = nn.Dropout(p=dropout_rate)
-        self.conv2 = LocalLossBlockConv(planes, planes, 3, stride, 1, num_classes, input_dim,
+        self.conv2 = LocalLossBlockConv(planes, planes, 3, stride, 1, num_classes, input_dim, dim_in_decoder,
                                         dropout=None if self.adapted else 0, bias=True, pre_act=True, post_act=False, args=self.args)
 
         self.shortcut = nn.Sequential()
@@ -65,18 +65,21 @@ class wide_basic(nn.Module):
                 self.optimizer.step()
                 self.optimizer.zero_grad()
 
-        return (out, y, y_onehot, loss_total)
+        return out, y, y_onehot, loss_total
 
 
-class Wide_ResNet(nn.Module):
-    '''
-    Wide residual network.
-    The network can be trained by backprop or by locally generated error signal based on cross-entropy and/or similarity matching loss.
-    '''
+class WideResNet(nn.Module):
+    """
+    Wide residual network. The network can be trained by backprop or by locally generated error signal based on
+    cross-entropy and/or similarity matching loss.
+    """
 
-    def __init__(self, depth, widen_factor, dropout_rate, num_classes, input_ch, input_dim, adapted=False):
-        super(Wide_ResNet, self).__init__()
+    def __init__(self, depth, widen_factor, dropout_rate, num_classes, input_ch, input_dim, dim_in_decoder, args, adapted=False):
+        super(WideResNet, self).__init__()
         self.adapted = adapted
+        self.args = args
+        self.dim_in_decoder = dim_in_decoder
+        self.num_classes = num_classes
         assert ((depth - 4) % 6 == 0), 'Wide-resnet depth should be 6n+4'
         n = int((depth - 4) / 6)
         k = widen_factor
@@ -88,33 +91,34 @@ class Wide_ResNet(nn.Module):
             nStages = [16, 16 * k, 32 * k, 64 * k]
         self.in_planes = nStages[0]
 
-        self.conv1 = LocalLossBlockConv(input_ch, nStages[0], 3, 1, 1, num_classes, 32, dropout=0, bias=True,
-                                        post_act=False, args=self.args)
-        self.layer1 = self._wide_layer(wide_basic, nStages[1], n, dropout_rate, 1, num_classes, input_dim, adapted)
-        self.layer2 = self._wide_layer(wide_basic, nStages[2], n, dropout_rate, 2, num_classes, input_dim, adapted)
-        self.layer3 = self._wide_layer(wide_basic, nStages[3], n, dropout_rate, 2, num_classes, input_dim // 2, adapted)
+        self.conv1 = LocalLossBlockConv(input_ch, nStages[0], 3, 1, 1, num_classes, 32, dim_in_decoder, dropout=0,
+                                        bias=True, post_act=False, args=self.args)
+        self.layer1 = self._wide_layer(WideBasic, nStages[1], n, dropout_rate, 1, input_dim,  adapted)
+        self.layer2 = self._wide_layer(WideBasic, nStages[2], n, dropout_rate, 2, input_dim, adapted)
+        self.layer3 = self._wide_layer(WideBasic, nStages[3], n, dropout_rate, 2, input_dim // 2, adapted)
         self.bn1 = nn.BatchNorm2d(nStages[3], momentum=0.9)
         self.linear = nn.Linear(nStages[3] * (16 if self.adapted else 1), num_classes)
         if not self.args.backprop:
             self.linear.weight.data.zero_()
 
-    def _wide_layer(self, block, planes, num_blocks, dropout_rate, stride, num_classes, input_dim, adapted):
+    def _wide_layer(self, block, planes, num_blocks, dropout_rate, stride, input_dim, adapted):
         strides = [stride] + [1] * (num_blocks - 1)
         layers = []
         stride_cum = 1
         for stride in strides:
             stride_cum *= stride
             layers.append(
-                block(self.in_planes, planes, dropout_rate, stride, num_classes, input_dim // stride_cum, adapted))
+                block(self.in_planes, planes, dropout_rate, stride, self.num_classes, input_dim // stride_cum,
+                      self.dim_in_decoder, adapted, self.args))
             self.in_planes = planes
 
         return nn.Sequential(*layers)
 
-    def parameters(self):
+    def parameters(self, **kwargs):
         if not self.args.backprop:
             return self.linear.parameters()
         else:
-            return super(Wide_ResNet, self).parameters()
+            return super(WideResNet, self).parameters()
 
     def set_learning_rate(self, lr):
         self.conv1.set_learning_rate(lr)

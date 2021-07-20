@@ -25,7 +25,6 @@ class LocalLossBlockLinear(nn.Module):
         self.sim = LossSim(num_classes, num_out, args)
         self.pred = LossPred(num_classes, num_out, args)
         self.recon = LossRecon(num_in, num_out, args, first_layer)
-
         self.dropout_p = args.dropout if dropout_p is None else dropout_p
         self.batchnorm = not args.no_batch_norm if batchnorm is None else batchnorm
         self.encoder = nn.Linear(num_in, num_out, bias=True)
@@ -58,6 +57,7 @@ class LocalLossBlockLinear(nn.Module):
             self.examples = 0
 
     def print_stats(self):
+        return ''
         if not self.args.backprop:
             stats = '{}, loss_sim={:.4f}, loss_pred={:.4f}, error={:.3f}%, num_examples={}\n'.format(
                 self.encoder,
@@ -95,12 +95,12 @@ class LocalLossBlockLinear(nn.Module):
         # Calculate local loss and update weights
         if (self.training or not self.args.no_print_stats) and not self.args.backprop:
 
-            # loss_recon = self.recon(x)
-            # loss_sim_u, loss_sim_s = self.sim(x, y_onehot)
-            loss_pred = self.pred(x, y, y_onehot)
+            loss_recon = self.recon(x, h)
+            loss_sim_u, loss_sim_s = self.sim(x, h, y_onehot)
+            loss_pred = self.pred(h, y, y_onehot)
             # loss_mahi = 0.0
             # Combine unsupervised and supervised loss
-            loss = loss_pred #sum(map(lambda _x: _x[0] * _x[1], zip(self.args.abcde, [loss_recon, loss_sim_u, loss_sim_s, loss_pred])))
+            loss = sum(map(lambda _x: _x[0] * _x[1], zip(self.args.abcde, [loss_recon, loss_sim_u, loss_sim_s, loss_pred])))
 
             # Single-step back-propagation
             if self.training:

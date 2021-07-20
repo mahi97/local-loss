@@ -30,14 +30,14 @@ class VGGn(nn.Module):
         feat_mult (float): Multiply number of feature maps with this number.
     '''
 
-    def __init__(self, vgg_name, input_dim, input_ch, num_classes, feat_mult=1, args=None):
+    def __init__(self, vgg_name, input_dim, input_ch, num_classes, dim_in_decoder, feat_mult=1, args=None):
         super(VGGn, self).__init__()
         self.args = args
         self.cfg = cfg[vgg_name]
         self.input_dim = input_dim
         self.input_ch = input_ch
         self.num_classes = num_classes
-        self.features, output_dim = self._make_layers(self.cfg, input_ch, input_dim, feat_mult)
+        self.features, output_dim = self._make_layers(self.cfg, input_ch, input_dim, feat_mult, dim_in_decoder)
         for layer in self.cfg:
             if isinstance(layer, int):
                 output_ch = layer
@@ -91,7 +91,7 @@ class VGGn(nn.Module):
 
         return x, loss_total
 
-    def _make_layers(self, cfg, input_ch, input_dim, feat_mult):
+    def _make_layers(self, cfg, input_ch, input_dim, feat_mult, dim_in_decoder):
         layers = []
         first_layer = True
         scale_cum = 1
@@ -120,12 +120,12 @@ class VGGn(nn.Module):
                     scale_cum = 2
                     layers += [LocalLossBlockConv(input_ch, x, kernel_size=7, stride=2, padding=3,
                                                   num_classes=self.num_classes,
-                                                  dim_out=input_dim // scale_cum,
+                                                  dim_out=input_dim // scale_cum, dim_in_decoder=dim_in_decoder,
                                                   first_layer=first_layer, args=self.args)]
                 else:
                     layers += [LocalLossBlockConv(input_ch, x, kernel_size=3, stride=1, padding=1,
                                                   num_classes=self.num_classes,
-                                                  dim_out=input_dim // scale_cum,
+                                                  dim_out=input_dim // scale_cum, dim_in_decoder=dim_in_decoder,
                                                   first_layer=first_layer, args=self.args)]
                 input_ch = x
                 first_layer = False

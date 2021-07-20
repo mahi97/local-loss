@@ -10,14 +10,14 @@ class BasicBlock(nn.Module):
     """ Used in ResNet() """
     expansion = 1
 
-    def __init__(self, in_planes, planes, stride, num_classes, input_dim, args):
+    def __init__(self, in_planes, planes, stride, num_classes, input_dim, dim_in_decoder, args):
         super(BasicBlock, self).__init__()
         self.args = args
         self.input_dim = input_dim
         self.stride = stride
-        self.conv1 = LocalLossBlockConv(in_planes, planes, 3, stride, 1, num_classes, input_dim, bias=False,
+        self.conv1 = LocalLossBlockConv(in_planes, planes, 3, stride, 1, num_classes, input_dim, dim_in_decoder, bias=False,
                                         pre_act=args.pre_act, post_act=not args.pre_act, args=args)
-        self.conv2 = LocalLossBlockConv(planes, planes, 3, 1, 1, num_classes, input_dim, bias=False,
+        self.conv2 = LocalLossBlockConv(planes, planes, 3, 1, 1, num_classes, input_dim, dim_in_decoder, bias=False,
                                         pre_act=args.pre_act, post_act=not args.pre_act, args=args)
 
         self.shortcut = nn.Sequential()
@@ -71,12 +71,15 @@ class Bottleneck(nn.Module):
     """ Used in ResNet() """
     expansion = 4
 
-    def __init__(self, in_planes, planes, stride, num_classes, input_dim):
+    def __init__(self, in_planes, planes, stride, num_classes, input_dim, dim_in_decoder, args):
         super(Bottleneck, self).__init__()
-        self.conv1 = LocalLossBlockConv(in_planes, planes, 1, 1, 0, num_classes, input_dim, bias=False, args=self.args)
-        self.conv2 = LocalLossBlockConv(planes, planes, 3, stride, 1, num_classes, input_dim // stride, bias=False, args=self.args)
+        self.args = args
+        self.conv1 = LocalLossBlockConv(in_planes, planes, 1, 1, 0, num_classes, input_dim,
+                                        dim_in_decoder, bias=False, args=self.args)
+        self.conv2 = LocalLossBlockConv(planes, planes, 3, stride, 1, num_classes, input_dim // stride,
+                                        dim_in_decoder, bias=False, args=self.args)
         self.conv3 = LocalLossBlockConv(planes, self.expansion * planes, 1, 1, 0, num_classes, input_dim // stride,
-                                        bias=False, args=self.args)
+                                        dim_in_decoder, bias=False, args=self.args)
 
         self.shortcut = nn.Sequential()
         if stride != 1 or in_planes != self.expansion * planes:
@@ -128,7 +131,7 @@ class Bottleneck(nn.Module):
                 self.optimizer.step()
                 self.optimizer.zero_grad()
 
-        return (out, y, y_onehot, loss_total)
+        return out, y, y_onehot, loss_total
 
 
 class ResNet(nn.Module):
@@ -137,33 +140,35 @@ class ResNet(nn.Module):
     The network can be trained by backprop or by locally generated error signal based on cross-entropy and/or similarity matching loss.
     """
 
-    def __init__(self, block, num_blocks, num_classes, input_ch, feature_multiplyer, input_dim):
+    def __init__(self, block, num_blocks, num_classes, input_ch, feature_multiplyer, input_dim, dim_in_decoder, args):
         super(ResNet, self).__init__()
+        self.args = args
+        self.num_classes = num_classes
+        self.dim_in_decoder = dim_in_decoder
         block = BasicBlock if block == 'basic' else Bottleneck
         self.in_planes = int(feature_multiplyer * 64)
         self.conv1 = LocalLossBlockConv(input_ch, int(feature_multiplyer * 64), 3, 1, 1, num_classes, input_dim,
-                                        bias=False, post_act=not self.args.pre_act, args=self.args)
-        self.layer1 = self._make_layer(block, int(feature_multiplyer * 64), num_blocks[0], 1, num_classes, input_dim)
-        self.layer2 = self._make_layer(block, int(feature_multiplyer * 128), num_blocks[1], 2, num_classes, input_dim)
-        self.layer3 = self._make_layer(block, int(feature_multiplyer * 256), num_blocks[2], 2, num_classes,
-                                       input_dim // 2)
-        self.layer4 = self._make_layer(block, int(feature_multiplyer * 512), num_blocks[3], 2, num_classes,
-                                       input_dim // 4)
+                                        dim_in_decoder, bias=False, post_act=not self.args.pre_act, args=self.args)
+        self.layer1 = self._make_layer(block, int(feature_multiplyer * 64), num_blocks[0], 1, input_dim)
+        self.layer2 = self._make_layer(block, int(feature_multiplyer * 128), num_blocks[1], 2, input_dim)
+        self.layer3 = self._make_layer(block, int(feature_multiplyer * 256), num_blocks[2], 2, input_dim // 2)
+        self.layer4 = self._make_layer(block, int(feature_multiplyer * 512), num_blocks[3], 2, input_dim // 4)
         self.linear = nn.Linear(int(feature_multiplyer * 512 * block.expansion), num_classes)
         if not self.args.backprop:
             self.linear.weight.data.zero_()
 
-    def _make_layer(self, block, planes, num_blocks, stride, num_classes, input_dim):
+    def _make_layer(self, block, planes, num_blocks, stride, input_dim):
         strides = [stride] + [1] * (num_blocks - 1)
         layers = []
         stride_cum = 1
         for stride in strides:
-            layers.append(block(self.in_planes, planes, stride, num_classes, input_dim // stride_cum))
+            layers.append(block(self.in_planes, planes, stride, self.num_classes, input_dim // stride_cum,
+                                self.dim_in_decoder, self.args))
             stride_cum *= stride
             self.in_planes = planes * block.expansion
         return nn.Sequential(*layers)
 
-    def parameters(self):
+    def parameters(self, **kwargs):
         if not self.args.backprop:
             return self.linear.parameters()
         else:

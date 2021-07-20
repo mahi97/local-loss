@@ -31,7 +31,7 @@ def get_avg_pool_and_dim_in_decoder(dim_out, num_out, _dim_in_decoder):
 
 
 class LocalLossBlockConv(nn.Module):
-    '''
+    """
     A block containing nn.Conv2d -> nn.BatchNorm2d -> nn.ReLU -> nn.Dropou2d
     The block can be trained by backprop or by locally generated error signal based on cross-entropy and/or similarity matching loss.
 
@@ -43,20 +43,21 @@ class LocalLossBlockConv(nn.Module):
         padding (int): Padding in Conv2d.
         num_classes (int): Number of classes (used in local prediction loss).
         dim_out (int): Feature map height/width for input (and output).
+        dim_in_decoder (int): input dimension of decoder_y used in pred and pred loss.
         first_layer (bool): True if this is the first layer in the network (used in local reconstruction loss).
         dropout (float): Dropout rate, if None, read from Args.dropout.
         bias (bool): True if to use trainable bias.
         pre_act (bool): True if to apply layer order nn.BatchNorm2d -> nn.ReLU -> nn.Dropou2d -> nn.Conv2d (used for PreActResNet).
         post_act (bool): True if to apply layer order nn.Conv2d -> nn.BatchNorm2d -> nn.ReLU -> nn.Dropou2d.
-    '''
+    """
 
-    def __init__(self, ch_in, ch_out, kernel_size, stride, padding, num_classes, dim_out, first_layer=False,
-                 dropout=None, bias=None, pre_act=False, post_act=True, args=None):
+    def __init__(self, ch_in, ch_out, kernel_size, stride, padding, num_classes, dim_out, dim_in_decoder,
+                 first_layer=False, dropout=None, bias=None, pre_act=False, post_act=True, args=None):
         super(LocalLossBlockConv, self).__init__()
         self.args = args
-        avg_pool, dim_in_decoder = get_avg_pool_and_dim_in_decoder(dim_out, ch_out, args.dim_in_decoder)
+        avg_pool, did = get_avg_pool_and_dim_in_decoder(dim_out, ch_out, dim_in_decoder)
         self.sim = LossSim(num_classes, ch_out, args, True, avg_pool)
-        self.pred = LossPred(num_classes, dim_in_decoder, args, avg_pool)
+        self.pred = LossPred(num_classes, did, args, avg_pool)
         self.recon = LossRecon(ch_in, ch_out, args, first_layer, True, kernel_size, stride, padding, bias)
         self.ch_in = ch_in
         self.ch_out = ch_out
@@ -98,6 +99,7 @@ class LocalLossBlockConv(nn.Module):
             self.examples = 0
 
     def print_stats(self):
+        return ''
         if not self.args.backprop:
             stats = '{}, loss_sim={:.4f}, loss_pred={:.4f}, error={:.3f}%, num_examples={}\n'.format(
                 self.encoder,
@@ -158,12 +160,12 @@ class LocalLossBlockConv(nn.Module):
                 h = self.nonlin(h)
 
             # Calculate hidden feature similarity matrix
-            # loss_recon = self.recon(h)
-            # loss_sim_u, loss_sim_s = self.sim(h, y_onehot)
-            loss_pred = self.pred(x, y, y_onehot)
+            # loss_recon = self.recon(x, h)
+            loss_sim_u, loss_sim_s = self.sim(x, h, y_onehot)
+            loss_pred = self.pred(h, y, y_onehot)
             # loss_mahi = 0.0
 
-            loss = loss_pred #sum(map(lambda _x: _x[0] * _x[1], zip(self.args.abcde, [loss_recon, loss_sim_u, loss_sim_s, loss_pred])))
+            loss = sum(map(lambda _x: _x[0] * _x[1], zip(self.args.abcde, [0.0, loss_sim_u, loss_sim_s, loss_pred])))
 
             # Single-step back-propagation
             if self.training:
