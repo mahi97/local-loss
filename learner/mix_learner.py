@@ -24,16 +24,26 @@ def to_one_hot(y, n_dims=None):
 
 
 class MixLearner:
-    def __init__(self, optimizer, args, num_classes, train_loader, test_loader):
-        self.optimizer = optimizer
+    def __init__(self, model, args, num_classes, train_loader, test_loader):
+        self.optimizer = None
+        self.optimizer_mix = None
+        self.model = model
         self.args = args
         self.num_classes = num_classes
         self.train_loader = train_loader
         self.test_loader = test_loader
+        if args.optim == 'sgd':
+            self.optimizer_mix = optim.SGD(model.parameters(), lr=args.lr, weight_decay=args.weight_decay, momentum=args.momentum)
+            self.optimizer = optim.SGD(model.parameters(), lr=args.lr, weight_decay=args.weight_decay, momentum=args.momentum)
+        elif args.optim == 'adam' or args.optim == 'amsgrad':
+            self.optimizer_mix = optim.Adam(model.parameters(), lr=args.lr, weight_decay=args.weight_decay, amsgrad=args.optim == 'amsgrad')
+            self.optimizer = optim.Adam(model.parameters(), lr=args.lr, weight_decay=args.weight_decay, amsgrad=args.optim == 'amsgrad')
+        else:
+            print('Unknown optimizer')
 
-    def train(self, epoch, lr, model):
+    def train(self, epoch, lr):
         """ Train model on train set"""
-        model.train()
+        self.model.train()
         correct = 0
         loss_total_local = 0
         loss_total_global = 0
@@ -44,7 +54,7 @@ class MixLearner:
 
         # Clear layerwise statistics
         if not self.args.no_print_stats:
-            for m in model.modules():
+            for m in self.model.modules():
                 if isinstance(m, LocalLossBlockLinear) or isinstance(m, LocalLossBlockConv):
                     m.clear_stats()
 
@@ -59,27 +69,30 @@ class MixLearner:
 
             # Clear accumulated gradient
             self.optimizer.zero_grad()
-            model.optim_zero_grad()
+            self.optimizer_mix.zero_grad()
+            self.model.optim_zero_grad()
 
-            output, loss, local_losses = model(data, target, target_onehot)
-            loss_total_global += loss * data.size(0)
-            loss_total_local += sum(local_losses).item() * data.size(0)
+            output, mix_loss, true_loss, local_loss = self.model(data, target, target_onehot)
+            loss_total_global += mix_loss * data.size(0)
+            loss_total_local += local_loss.item() * data.size(0)
 
             # Backward pass and optimizer step
             # This is only for mixer to true value
-            loss.backward()
-            self.optimizer.step()
+            mix_loss.backward()
+            self.optimizer_mix.step()
 
+            true_loss.backward()
+            self.optimizer.step()
             # If special option for no detaching is set, update weights also in hidden layers
-            if self.args.no_detach and batch_idx % 100 == 0:
-                model.optim_step()
+            if self.args.no_detach and batch_idx % 10 == 0:
+                self.model.optim_step()
 
             pred = output.max(1)[1]  # get the index of the max log-probability
             correct += pred.eq(target_).cpu().sum()
 
             # Update progress bar
             if self.args.progress_bar:
-                pbar.set_postfix(loss=loss.item(), refresh=False)
+                pbar.set_postfix(loss=mix_loss.item(), refresh=False)
                 pbar.update()
 
         if self.args.progress_bar:
@@ -107,22 +120,22 @@ class MixLearner:
             torch.cuda.memory_allocated() / 1e6,
             torch.cuda.max_memory_allocated() / 1e6)
         if not self.args.no_print_stats:
-            for m in model.modules():
+            for m in self.model.modules():
                 if isinstance(m, LocalLossBlockLinear) or isinstance(m, LocalLossBlockConv):
                     string_print += m.print_stats()
         print(string_print)
 
         return loss_average_local + loss_average_global, error_percent, string_print
 
-    def test(self, epoch, model):
+    def test(self, epoch):
         """ Run model on test set """
-        model.eval()
+        self.model.eval()
         test_loss = 0
         correct = 0
 
         # Clear layerwise statistics
         if not self.args.no_print_stats:
-            for m in model.modules():
+            for m in self.model.modules():
                 if isinstance(m, LocalLossBlockLinear) or isinstance(m, LocalLossBlockConv):
                     m.clear_stats()
 
@@ -136,7 +149,7 @@ class MixLearner:
                 target_onehot = target_onehot.cuda()
 
             with torch.no_grad():
-                output, _, _ = model(data, target, target_onehot)
+                output, _, _, _ = self.model(data, target, target_onehot)
                 test_loss += F.cross_entropy(output, target).item() * data.size(0)
             pred = output.max(1)[1]  # get the index of the max log-probability
             correct += pred.eq(target_).cpu().sum()
@@ -149,7 +162,7 @@ class MixLearner:
         string_print = 'Test loss_global={:.4f}, error={:.3f}%\n'.format(loss_average, error_percent)
         wandb.log({"Test Loss Global": loss_average, "Test Error": error_percent})
         if not self.args.no_print_stats:
-            for m in model.modules():
+            for m in self.model.modules():
                 if isinstance(m, LocalLossBlockLinear) or isinstance(m, LocalLossBlockConv):
                     string_print += m.print_stats()
         print(string_print)

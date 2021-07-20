@@ -61,15 +61,6 @@ if __name__ == '__main__':
         model.cuda()
     wandb.watch(model)
 
-    optimizer = None
-    if args.optim == 'sgd':
-        optimizer = optim.SGD(model.parameters(), lr=args.lr, weight_decay=args.weight_decay, momentum=args.momentum)
-    elif args.optim == 'adam' or args.optim == 'amsgrad':
-        optimizer = optim.Adam(model.parameters(), lr=args.lr, weight_decay=args.weight_decay,
-                               amsgrad=args.optim == 'amsgrad')
-    else:
-        print('Unknown optimizer')
-
     model.set_learning_rate(args.lr)
     print(model)
     print('Model {} has {} parameters influenced by global loss'.format(args.model, count_parameters(model)))
@@ -78,9 +69,9 @@ if __name__ == '__main__':
     start_epoch = 1 if checkpoint is None else 1 + checkpoint['epoch']
     # Train and test
     if args.model == 'mahi':
-        learner = MixLearner(optimizer, args, num_classes, train_loader, test_loader)
+        learner = MixLearner(model, args, num_classes, train_loader, test_loader)
     else:
-        learner = SoloLearner(optimizer, args, num_classes, train_loader, test_loader)
+        learner = SoloLearner(model, args, num_classes, train_loader, test_loader)
 
     for epoch in range(start_epoch, args.epochs + 1):
         # Decide learning rate
@@ -94,7 +85,7 @@ if __name__ == '__main__':
                 save_state_dict = True
 
         # Set learning rate
-        for param_group in optimizer.param_groups:
+        for param_group in model.optimizer.param_groups:
             param_group['lr'] = lr
         model.set_learning_rate(lr)
 
@@ -138,7 +129,7 @@ if __name__ == '__main__':
                 if epoch == 1:
                     f.write('{}\n\n'.format(args))
                     f.write('{}\n\n'.format(model))
-                    f.write('{}\n\n'.format(optimizer))
+                    f.write('{}\n\n'.format(model.optimizer))
                     f.write('Model {} has {} parameters influenced by global loss\n\n'.format(args.model,
                                                                                               count_parameters(model)))
                 f.write(train_print)

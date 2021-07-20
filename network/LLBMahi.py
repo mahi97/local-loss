@@ -18,7 +18,7 @@ class LocalLossBlockMahi(nn.Module):
         batchnorm (bool): True if to use batchnorm, if None, read from args.no_batch_norm.
     """
 
-    def __init__(self, num_in, num_out, num_classes, first_layer=False, dropout_p=None, batchnorm=None, args=None):
+    def __init__(self, num_in, num_out, num_classes, last_layer=False, dropout_p=None, batchnorm=None, args=None):
         super(LocalLossBlockMahi, self).__init__()
         self.args = args
         self.num_classes = num_classes
@@ -39,11 +39,11 @@ class LocalLossBlockMahi(nn.Module):
         if self.dropout_p > 0:
             self.dropout = torch.nn.Dropout(p=self.dropout_p, inplace=False)
 
-        if args.optim == 'sgd':
-            self.optimizer = optim.SGD(self.parameters(), lr=0, weight_decay=args.weight_decay, momentum=args.momentum)
-        elif args.optim == 'adam' or args.optim == 'amsgrad':
-            self.optimizer = optim.Adam(self.parameters(), lr=0, weight_decay=args.weight_decay,
-                                        amsgrad=args.optim == 'amsgrad')
+        # if args.optim == 'sgd':
+        #     self.optimizer = optim.SGD(self.parameters(), lr=0, weight_decay=args.weight_decay, momentum=args.momentum)
+        # elif args.optim == 'adam' or args.optim == 'amsgrad':
+        #     self.optimizer = optim.Adam(self.parameters(), lr=0, weight_decay=args.weight_decay,
+        #                                 amsgrad=args.optim == 'amsgrad')
 
         self.clear_stats()
 
@@ -68,15 +68,18 @@ class LocalLossBlockMahi(nn.Module):
         #     return ''
 
     def set_learning_rate(self, lr):
-        self.lr = lr
-        for param_group in self.optimizer.param_groups:
-            param_group['lr'] = self.lr
+        pass
+        # self.lr = lr
+        # for param_group in self.optimizer.param_groups:
+        #     param_group['lr'] = self.lr
 
     def optim_zero_grad(self):
-        self.optimizer.zero_grad()
+        pass
+        # self.optimizer.zero_grad()
 
     def optim_step(self):
-        self.optimizer.step()
+        pass
+        # self.optimizer.step()
 
     def forward(self, x):
         # The linear transformation
@@ -96,12 +99,12 @@ class LocalLossBlockMahi(nn.Module):
             loss = self.mix(h)
 
             # Single-step back-propagation
-            if self.training:
-                loss.backward(retain_graph=self.args.no_detach)
-                self.optimizer.step()
+            # if self.training:
+            #     loss.backward(retain_graph=self.args.no_detach)
+            #     self.optimizer.step()
             # Update weights in this layer and detach computational graph
             if self.training and not self.args.no_detach:
-                self.optimizer.zero_grad()
+                # self.optimizer.zero_grad()
                 h_return.detach_()
 
             loss = loss.item()

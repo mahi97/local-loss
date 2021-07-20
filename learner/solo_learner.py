@@ -24,16 +24,24 @@ def to_one_hot(y, n_dims=None):
 
 
 class SoloLearner:
-    def __init__(self, optimizer, args, num_classes, train_loader, test_loader):
-        self.optimizer = optimizer
+    def __init__(self, model, args, num_classes, train_loader, test_loader):
+        self.optimizer = None
+        self.model = model
         self.args = args
         self.num_classes = num_classes
         self.train_loader = train_loader
         self.test_loader = test_loader
-
-    def train(self, epoch, lr, model):
+        if args.optim == 'sgd':
+            self.optimizer = optim.SGD(model.parameters(), lr=args.lr, weight_decay=args.weight_decay,
+                                       momentum=args.momentum)
+        elif args.optim == 'adam' or args.optim == 'amsgrad':
+            self.optimizer = optim.Adam(model.parameters(), lr=args.lr, weight_decay=args.weight_decay,
+                                        amsgrad=args.optim == 'amsgrad')
+        else:
+            print('Unknown optimizer')
+    def train(self, epoch, lr):
         """ Train model on train set"""
-        model.train()
+        self.model.train()
         correct = 0
         loss_total_local = 0
         loss_total_global = 0
@@ -45,7 +53,7 @@ class SoloLearner:
 
         # Clear layerwise statistics
         if not self.args.no_print_stats:
-            for m in model.modules():
+            for m in self.model.modules():
                 if isinstance(m, LocalLossBlockLinear) or isinstance(m, LocalLossBlockConv):
                     m.clear_stats()
 
@@ -60,9 +68,9 @@ class SoloLearner:
 
             # Clear accumulated gradient
             self.optimizer.zero_grad()
-            model.optim_zero_grad()
+            self.model.optim_zero_grad()
 
-            output, loss = model(data, target, target_onehot)
+            output, loss = self.model(data, target, target_onehot)
             loss_total_local += loss * data.size(0)
             loss = F.cross_entropy(output, target)
             if self.args.loss_sup == 'predsim' and not self.args.backprop:
@@ -76,7 +84,7 @@ class SoloLearner:
 
             # If special option for no detaching is set, update weights also in hidden layers
             if self.args.no_detach:
-                model.optim_step()
+                self.model.optim_step()
 
             pred = output.max(1)[1]  # get the index of the max log-probability
             correct += pred.eq(target_).cpu().sum()
@@ -110,22 +118,22 @@ class SoloLearner:
             torch.cuda.memory_allocated() / 1e6,
             torch.cuda.max_memory_allocated() / 1e6)
         if not self.args.no_print_stats:
-            for m in model.modules():
+            for m in self.model.modules():
                 if isinstance(m, LocalLossBlockLinear) or isinstance(m, LocalLossBlockConv):
                     string_print += m.print_stats()
         print(string_print)
 
         return loss_average_local + loss_average_global, error_percent, string_print
 
-    def test(self, epoch, model):
+    def test(self, epoch):
         """ Run model on test set """
-        model.eval()
+        self.model.eval()
         test_loss = 0
         correct = 0
 
         # Clear layerwise statistics
         if not self.args.no_print_stats:
-            for m in model.modules():
+            for m in self.model.modules():
                 if isinstance(m, LocalLossBlockLinear) or isinstance(m, LocalLossBlockConv):
                     m.clear_stats()
 
@@ -139,7 +147,7 @@ class SoloLearner:
                 target_onehot = target_onehot.cuda()
 
             with torch.no_grad():
-                output, _ = model(data, target, target_onehot)
+                output, _ = self.model(data, target, target_onehot)
                 test_loss += F.cross_entropy(output, target).item() * data.size(0)
             pred = output.max(1)[1]  # get the index of the max log-probability
             correct += pred.eq(target_).cpu().sum()
@@ -152,7 +160,7 @@ class SoloLearner:
         string_print = 'Test loss_global={:.4f}, error={:.3f}%\n'.format(loss_average, error_percent)
         wandb.log({"Test Loss Global": loss_average, "Test Error": error_percent})
         if not self.args.no_print_stats:
-            for m in model.modules():
+            for m in self.model.modules():
                 if isinstance(m, LocalLossBlockLinear) or isinstance(m, LocalLossBlockConv):
                     string_print += m.print_stats()
         print(string_print)
