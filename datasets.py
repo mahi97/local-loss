@@ -118,8 +118,11 @@ def get_dataset(args):
     num_classes = None
     train_loader = None
     test_loader = None
+    dataset_train = None
+    dim_in_decoder = None
     kwargs = {'num_workers': 0, 'pin_memory': True} if args.cuda else {}
     if args.dataset == 'MNIST':
+        dim_in_decoder = 1024
         input_dim = 28
         input_ch = 1
         num_classes = 10
@@ -145,6 +148,7 @@ def get_dataset(args):
                            ])),
             batch_size=args.batch_size, shuffle=False, **kwargs)
     elif args.dataset == 'FashionMNIST':
+        dim_in_decoder = 1024
         input_dim = 28
         input_ch = 1
         num_classes = 10
@@ -172,6 +176,7 @@ def get_dataset(args):
                                   ])),
             batch_size=args.batch_size, shuffle=False, **kwargs)
     elif args.dataset == 'KuzushijiMNIST':
+        dim_in_decoder = 1024
         input_dim = 28
         input_ch = 1
         num_classes = 10
@@ -196,6 +201,7 @@ def get_dataset(args):
                            ])),
             batch_size=args.batch_size, shuffle=False, **kwargs)
     elif args.dataset == 'CIFAR10':
+        dim_in_decoder = 2048
         input_dim = 32
         input_ch = 3
         num_classes = 10
@@ -222,6 +228,7 @@ def get_dataset(args):
                              ])),
             batch_size=args.batch_size, shuffle=False, **kwargs)
     elif args.dataset == 'CIFAR100':
+        dim_in_decoder = 4096
         input_dim = 32
         input_ch = 3
         num_classes = 100
@@ -248,6 +255,7 @@ def get_dataset(args):
                               ])),
             batch_size=args.batch_size, shuffle=False, **kwargs)
     elif args.dataset == 'SVHN':
+        dim_in_decoder = 2048
         input_dim = 32
         input_ch = 3
         num_classes = 10
@@ -274,6 +282,7 @@ def get_dataset(args):
                           ])),
             batch_size=args.batch_size, shuffle=False, **kwargs)
     elif args.dataset == 'STL10':
+        dim_in_decoder = 2048
         input_dim = 96
         input_ch = 3
         num_classes = 10
@@ -327,4 +336,4 @@ def get_dataset(args):
             batch_size=args.batch_size, shuffle=False, **kwargs)
     else:
         print('No valid dataset is specified')
-    return input_dim, input_ch, num_classes, train_loader, test_loader, dataset_train, kwargs
+    return input_dim, input_ch, num_classes, dim_in_decoder, train_loader, test_loader, dataset_train, kwargs
