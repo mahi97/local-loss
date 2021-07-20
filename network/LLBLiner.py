@@ -1,9 +1,8 @@
 import torch
 import torch.nn as nn
-import torch.nn.functional as F
 import torch.optim as optim
 
-from network.utils import LinearFA, similarity_matrix
+from network.loss import LossSim, LossRecon, LossPred
 
 
 class LocalLossBlockLinear(nn.Module):
@@ -15,42 +14,34 @@ class LocalLossBlockLinear(nn.Module):
         num_out (int): Number of output features from linear layer.
         num_classes (int): Number of classes (used in local prediction loss).
         first_layer (bool): True if this is the first layer in the network (used in local reconstruction loss).
-        dropout (float): Dropout rate, if None, read from args.dropout.
+        dropout_p (float): Dropout rate, if None, read from args.dropout.
         batchnorm (bool): True if to use batchnorm, if None, read from args.no_batch_norm.
     """
 
-    def __init__(self, num_in, num_out, num_classes, first_layer=False, dropout=None, batchnorm=None, args=None):
+    def __init__(self, num_in, num_out, num_classes, first_layer=False, dropout_p=None, batchnorm=None, args=None):
         super(LocalLossBlockLinear, self).__init__()
         self.args = args
         self.num_classes = num_classes
-        self.first_layer = first_layer
-        self.dropout_p = args.dropout if dropout is None else dropout
+        self.sim = LossSim(num_classes, num_out, args)
+        self.pred = LossPred(num_classes, num_out, args)
+        self.recon = LossRecon(num_in, num_out, args, first_layer)
+
+        self.dropout_p = args.dropout if dropout_p is None else dropout_p
         self.batchnorm = not args.no_batch_norm if batchnorm is None else batchnorm
         self.encoder = nn.Linear(num_in, num_out, bias=True)
-
-        if not args.backprop and args.loss_unsup == 'recon':
-            self.decoder_x = nn.Linear(num_out, num_in, bias=True)
-        if not args.backprop and (args.loss_sup == 'pred' or args.loss_sup == 'predsim'):
-            if args.bio:
-                self.decoder_y = LinearFA(num_out, args.target_proj_size)
-            else:
-                self.decoder_y = nn.Linear(num_out, num_classes)
-            self.decoder_y.weight.data.zero_()
-        if not args.backprop and args.bio:
-            self.proj_y = nn.Linear(num_classes, args.target_proj_size, bias=False)
-        if not args.backprop and not args.bio and (
-                args.loss_unsup == 'sim' or args.loss_sup == 'sim' or args.loss_sup == 'predsim'):
-            self.linear_loss = nn.Linear(num_out, num_out, bias=False)
-        if self.batchnorm:
-            self.bn = torch.nn.BatchNorm1d(num_out)
-            nn.init.constant_(self.bn.weight, 1)
-            nn.init.constant_(self.bn.bias, 0)
         if args.nonlin == 'relu':
             self.nonlin = nn.ReLU(inplace=True)
         elif args.nonlin == 'leakyrelu':
             self.nonlin = nn.LeakyReLU(negative_slope=0.01, inplace=True)
+
+        if self.batchnorm:
+            self.bn = torch.nn.BatchNorm1d(num_out)
+            nn.init.constant_(self.bn.weight, 1)
+            nn.init.constant_(self.bn.bias, 0)
+
         if self.dropout_p > 0:
             self.dropout = torch.nn.Dropout(p=self.dropout_p, inplace=False)
+
         if args.optim == 'sgd':
             self.optimizer = optim.SGD(self.parameters(), lr=0, weight_decay=args.weight_decay, momentum=args.momentum)
         elif args.optim == 'adam' or args.optim == 'amsgrad':
@@ -94,86 +85,28 @@ class LocalLossBlockLinear(nn.Module):
         h = self.encoder(x)
 
         # Add batchnorm and nonlinearity
-        if self.batchnorm:
-            h = self.bn(h)
+        h = self.bn(h) if self.batchnorm else h
         h = self.nonlin(h)
 
         # Save return value and add dropout
         h_return = h
-        if self.dropout_p > 0:
-            h_return = self.dropout(h_return)
+        h_return = self.dropout(h_return) if self.dropout_p > 0 else h_return
 
         # Calculate local loss and update weights
         if (self.training or not self.args.no_print_stats) and not self.args.backprop:
-            # Calculate hidden layer similarity matrix
-            if self.args.loss_unsup == 'sim' or self.args.loss_sup == 'sim' or self.args.loss_sup == 'predsim':
-                if self.args.bio:
-                    h_loss = h
-                else:
-                    h_loss = self.linear_loss(h)
-                Rh = similarity_matrix(h_loss)
 
-            # Calculate unsupervised loss
-            if self.args.loss_unsup == 'sim':
-                Rx = similarity_matrix(x).detach()
-                loss_unsup = F.mse_loss(Rh, Rx)
-            elif self.args.loss_unsup == 'recon' and not self.first_layer:
-                x_hat = self.nonlin(self.decoder_x(h))
-                loss_unsup = F.mse_loss(x_hat, x.detach())
-            else:
-                if self.args.cuda:
-                    loss_unsup = torch.cuda.FloatTensor([0])
-                else:
-                    loss_unsup = torch.FloatTensor([0])
-
-            # Calculate supervised loss
-            if self.args.loss_sup == 'sim':
-                if self.args.bio:
-                    Ry = similarity_matrix(self.proj_y(y_onehot)).detach()
-                else:
-                    Ry = similarity_matrix(y_onehot).detach()
-                loss_sup = F.mse_loss(Rh, Ry)
-                if not self.args.no_print_stats:
-                    self.loss_sim += loss_sup.item() * h.size(0)
-                    self.examples += h.size(0)
-            elif self.args.loss_sup == 'pred':
-                y_hat_local = self.decoder_y(h.view(h.size(0), -1))
-                if self.args.bio:
-                    float_type = torch.cuda.FloatTensor if self.args.cuda else torch.FloatTensor
-                    y_onehot_pred = self.proj_y(y_onehot).gt(0).type(float_type).detach()
-                    loss_sup = F.binary_cross_entropy_with_logits(y_hat_local, y_onehot_pred)
-                else:
-                    loss_sup = F.cross_entropy(y_hat_local, y.detach())
-                if not self.args.no_print_stats:
-                    self.loss_pred += loss_sup.item() * h.size(0)
-                    self.correct += y_hat_local.max(1)[1].eq(y).cpu().sum()
-                    self.examples += h.size(0)
-            elif self.args.loss_sup == 'predsim':
-                y_hat_local = self.decoder_y(h.view(h.size(0), -1))
-                if self.args.bio:
-                    Ry = similarity_matrix(self.proj_y(y_onehot)).detach()
-                    float_type = torch.cuda.FloatTensor if self.args.cuda else torch.FloatTensor
-                    y_onehot_pred = self.proj_y(y_onehot).gt(0).type(float_type).detach()
-                    loss_pred = (1 - self.args.beta) * F.binary_cross_entropy_with_logits(y_hat_local, y_onehot_pred)
-                else:
-                    Ry = similarity_matrix(y_onehot).detach()
-                    loss_pred = (1 - self.args.beta) * F.cross_entropy(y_hat_local, y.detach())
-                loss_sim = self.args.beta * F.mse_loss(Rh, Ry)
-                loss_sup = loss_pred + loss_sim
-                if not self.args.no_print_stats:
-                    self.loss_pred += loss_pred.item() * h.size(0)
-                    self.loss_sim += loss_sim.item() * h.size(0)
-                    self.correct += y_hat_local.max(1)[1].eq(y).cpu().sum()
-                    self.examples += h.size(0)
-
+            # loss_recon = self.recon(x)
+            # loss_sim_u, loss_sim_s = self.sim(x, y_onehot)
+            loss_pred = self.pred(x, y, y_onehot)
+            # loss_mahi = 0.0
             # Combine unsupervised and supervised loss
-            loss = self.args.alpha * loss_unsup + (1 - self.args.alpha) * loss_sup
+            loss = loss_pred #sum(map(lambda _x: _x[0] * _x[1], zip(self.args.abcde, [loss_recon, loss_sim_u, loss_sim_s, loss_pred])))
 
             # Single-step back-propagation
             if self.training:
                 loss.backward(retain_graph=self.args.no_detach)
 
-            # Update weights in this layer and detatch computational graph
+            # Update weights in this layer and detach computational graph
             if self.training and not self.args.no_detach:
                 self.optimizer.step()
                 self.optimizer.zero_grad()
