@@ -16,10 +16,10 @@ class LossPred(nn.Module):
             self.proj_y = nn.Linear(num_classes, args.target_proj_size, bias=False)
         self.decoder_y.weight.data.zero_()
 
-    def forward(self, x, y, y_onehot):
+    def forward(self, h, y, y_onehot):
         if self.avg_pool:
-            x = self.avg_pool(x)
-        y_hat_local = self.decoder_y(x.view(x.size(0), -1))
+            h = self.avg_pool(h)
+        y_hat_local = self.decoder_y(h.view(h.size(0), -1))
         if self.args.bio:
             float_type = torch.cuda.FloatTensor if self.args.cuda else torch.FloatTensor
             y_onehot_pred = self.proj_y(y_onehot).gt(0).type(float_type).detach()

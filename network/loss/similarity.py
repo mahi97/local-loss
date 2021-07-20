@@ -27,11 +27,11 @@ class LossSim(nn.Module):
         self.args = args
         self.avg_pool = avg_pool
 
-    def forward(self, x, y_onehot):
+    def forward(self, x, h, y_onehot):
         if self.args.bio:
-            h_loss = self.avg_pool(x) if self.avg_pool else x
+            h_loss = self.avg_pool(h) if self.avg_pool else h
         else:
-            h_loss = self.loss_fn(x)
+            h_loss = self.loss_fn(h)
         Rh = similarity_matrix(h_loss)
         Rx = similarity_matrix(x).detach()
         loss_unsup = F.mse_loss(Rh, Rx)

@@ -19,9 +19,9 @@ class LossRecon(nn.Module):
         elif args.nonlin == 'leakyrelu':
             self.nonlin = nn.LeakyReLU(negative_slope=0.01, inplace=True)
 
-    def forward(self, x):
+    def forward(self, x, h):
         if not self.first_layer:
-            x_hat = self.nonlin(self.decoder_x(x))
+            x_hat = self.nonlin(self.decoder_x(h))
             loss_unsup = F.mse_loss(x_hat, x.detach())
         else:
             if self.args.cuda:
