@@ -6,8 +6,9 @@ from network.LLBMahi import LocalLossBlockMahi
 from network.mixer.qmix import QMixer
 from network.mixer.vdn import VDNMixer
 
+
 class MAHI(nn.Module):
-    '''
+    """
     A fully connected network.
     The network can be trained by backprop or by locally generated error signal based on cross-entropy and/or similarity matching loss.
 
@@ -17,7 +18,7 @@ class MAHI(nn.Module):
         input_dim (int): Feature map height/width for input.
         input_ch (int): Number of feature maps for input.
         num_classes (int): Number of classes (used in local prediction loss).
-    '''
+    """
 
     def __init__(self, num_layers, num_hidden, input_dim, input_ch, num_classes, args):
         super(MAHI, self).__init__()
