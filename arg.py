@@ -2,8 +2,8 @@ import argparse
 
 def get_args():
     parser = argparse.ArgumentParser(description='PyTorch local error training')
-    parser.add_argument('--alpha', type=float, default=0.0,
-                        help='unsupervised fraction in similarity matching loss (default: 0.0)')
+    parser.add_argument('-a', '--abcde', nargs='+', default=[0.0, 0.0, 0.01, 0.99],
+                        help='coefficients for losses [recon, unsup_sim, sup_sim, pred, mahi]')
     parser.add_argument('--backprop', action='store_true', default=False,
                         help='disable local loss training')
     parser.add_argument('--batch-size', type=int, default=128,
@@ -40,7 +40,7 @@ def get_args():
                         help='decay learning rate at these milestone epochs (default: [200,300,350,375])')
     parser.add_argument('--lr-decay-fact', type=float, default=0.25,
                         help='learning rate decay factor to use at milestone epochs (default: 0.25)')
-    parser.add_argument('--model', default='vgg8b',
+    parser.add_argument('--model', default='mlp',
                         help='model, mlp, vgg13, vgg16, vgg19, vgg8b, vgg11b, resnet18, resnet34, wresnet28-10 and more (default: vgg8b)')
     parser.add_argument('--momentum', type=float, default=0.0,
                         help='SGD momentum (default: 0.0)')
