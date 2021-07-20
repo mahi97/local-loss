@@ -65,7 +65,7 @@ class LocalLossBlockConv(nn.Module):
             if self.args.bio:
                 self.decoder_y = LinearFA(dim_in_decoder, self.args.target_proj_size, args)
             else:
-                self.decoder_y = nn.Linear(dim_in_decoder, num_classes, args)
+                self.decoder_y = nn.Linear(dim_in_decoder, num_classes)
             self.decoder_y.weight.data.zero_()
         if not self.args.backprop and self.args.bio:
             self.proj_y = nn.Linear(num_classes, self.args.target_proj_size, bias=False)
