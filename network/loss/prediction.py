@@ -10,7 +10,7 @@ class LossPred(nn.Module):
         super(LossPred, self).__init__()
         self.args = args
         self.avg_pool = avg_pool
-        self.decoder_y = nn.Linear(num_out, num_classes, args)
+        self.decoder_y = nn.Linear(num_out, num_classes)
         if args.bio:
             self.decoder_y = LinearFA(num_out, args.target_proj_size, args)
             self.proj_y = nn.Linear(num_classes, args.target_proj_size, bias=False)
